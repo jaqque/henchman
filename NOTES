@@ -1,0 +1,44 @@
+User prompt basis:
+PROMPT='%B[%n@%m:%~%b$(git_super_status)%B]%#%b '
+
+Root prompt basis:
+PROMPT='%B%m:%~%b$(git_super_status)%B%#%b '
+
+Order:
+1. Session tag (HM_TAG)
+1. Time (HM_TIME)
+1. Battery (charge/discharge)
+1. Battery Charge %
+1. System Load
+1. Number of detached (tmux|screen) sessions
+1. Number of sleeping jobs
+1. Number of background jobs
+1. Colored [] for inside (tmux|screen) session
+    + How to deal with root theme?
+1. Colored @ for lack-of-X11
+1. Colored host if remote (ssh/telnet)
+1. Colored : if $PWD is read-only
+1. (Shortened) path
+1. HTTP proxy symbol
+1. VCS status
+1. Colored $? if non-zero
+1. Prompt (%/#/HG/git/whatever)
+
+Root order:
+
+1. Session tag
+1. Time
+1. Battery (charge/discharge)
+1. Battery Charge %
+1. System Load
+1. Number of detached (tmux|screen) sessions
+1. Number of sleeping jobs
+1. Number of background jobs
+1. tmux? x11
+1. Colored host if remote (ssh/telnet)
+1. Colored : if $PWD is read-only
+1. (Shortened) path
+1. HTTP proxy symbol
+1. VCS status
+1. Colored $? if non-zero
+1. Prompt (%/#/HG/git/whatever)
