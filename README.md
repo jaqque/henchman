@@ -18,7 +18,7 @@ Features:
 + Sleeping jobs
 + Background jobs
 + Inside of a session multiplexer
-+ Suepruser status
++ Superuser status
 + X11 available
 + Write/read-only in current directory
 + Shortening of current directory
