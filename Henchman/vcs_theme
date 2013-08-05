@@ -22,11 +22,11 @@ sm_git='%1{±%}'
 sm_hg='%1{☿%}'
 sm_svn='%1{‡%}'
 
-zstyle ':vcs_info:bzr:*' formats $format $sm_bzr $changes
-zstyle ':vcs_info:bzr:*' actionformats $actionformat $sm_bzr $changes
+zstyle ':vcs_info:bzr:*' formats $format $sm_bzr
+zstyle ':vcs_info:bzr:*' actionformats $actionformat $sm_bzr
 
-zstyle ':vcs_info:fossil:*' formats $format $sm_fossil $changes
-zstyle ':vcs_info:fossil:*' actionformats $actionformat $sm_fossil $changes
+zstyle ':vcs_info:fossil:*' formats $format $sm_fossil
+zstyle ':vcs_info:fossil:*' actionformats $actionformat $sm_fossil
 
 zstyle ':vcs_info:git:*' formats $format $sm_git $changes
 zstyle ':vcs_info:git:*' actionformats $actionformat $sm_git $changes
@@ -34,8 +34,8 @@ zstyle ':vcs_info:git:*' actionformats $actionformat $sm_git $changes
 zstyle ':vcs_info:hg:*' formats $format $sm_hg $changes
 zstyle ':vcs_info:hg:*' actionformats $actionformat $sm_hg $changes
 
-zstyle ':vcs_info:svn:*' formats $format $sm_svn $changes
-zstyle ':vcs_info:svn:*' actionformats $actionformat $sm_svn $changes
+zstyle ':vcs_info:svn:*' formats $format $sm_svn. $changes
+zstyle ':vcs_info:svn:*' actionformats $actionformat $sm_svn
 
 # Make %u and %c useful:
 zstyle ':vcs_info:*' check-for-changes true
@@ -58,4 +58,4 @@ zstyle ':vcs_info:*' unstagedstr '%F{red}%2{● %}%f'
 
 # How to integrate checking for pushes/pulls server side? what hook?
 
-PS1='%F{5}[%F{2}%n%F{5}] %F{3}%3~ %F{4}${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_:-%F{green\}%2{✔ %\}}}%f${vcs_info_msg_1_} '
+PS1='%F{5}[%F{2}%n%F{5}] %F{3}%3~ %F{4}${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_-%F{green\}%2{✔ %\}}}%f${vcs_info_msg_1_} '
