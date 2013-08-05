@@ -1,0 +1,21 @@
+#!/bin/echo Please use source 
+
+print 'Setting up for vcs info themes'
+autoload -Uz vcs_info
+function precmd() { vcs_info }
+
+format='[%b]%u%c'
+actionformat='[%b|%a]%u%c'
+# default repo format:
+zstyle ':vcs_info:*' formats $format '%#'
+zstyle ':vcs_info:*' actionformats $actionformat '%#'
+zstyle ':vcs_info:*' nvcsformats '' '%#' 
+
+
+# smart marks:
+zstyle ':vcs_info:hg:*' formats $format '☿'
+zstyle ':vcs_info:hg:*' actionformats $actionformat '☿'
+zstyle ':vcs_info:git:*' formats $format '±'
+zstyle ':vcs_info:git:*' actionformats $actionformat '±'
+
+PS1='%F{5}[%F{2}%n%F{5}] %F{3}%3~ %F{4}${vcs_info_msg_0_}%f${vcs_info_msg_1_} '
