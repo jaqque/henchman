@@ -12,11 +12,12 @@ color_unstaged='red'
 color_clean='green'
 color_action='cyan'
 
-format='[%b]'
+format="(%B%F{$color_branch}%b%f%%b"
 change_format="(%B%F{$color_branch}%b%f%%b|"
-actionformat='[%b|%a]'
+actionformat='(%b|%a'
+actionformat="[%B%F{$color_branch}%b%f%%b|%F{$color_action}%a%f]"
 change_actionformat="(%B%F{$color_branch}%b%f%%b:%F{$color_action}%a%f|"
-not_smart='(%s)-'
+not_smart='[%s]-'
 not_smart_mark='%#'
 changes='%u%c'
 no_changes='%{%}'
@@ -58,13 +59,18 @@ zstyle ':vcs_info:hg:*' use-simple false # default, but why trust that?
 
 # Make use of mercurial's local revision number
 zstyle ':vcs_info:hg:*' hgrevformat '%r:%8.8h' # this is %i in formats
+zstyle ':vcs_info:hg:*' hgrevformat '%r' # this is %i in formats
 zstyle ':vcs_info:hg:*' branchformat '%b(%r)'
+zstyle ':vcs_info:hg:*' branchformat '%r:%b'
 
 # These need to have spaces, since they appear double-wide, except for new file
 #   staged:    blue ✚
 # unstaged:     red ●
 # all good:   green ✔
 # new file: default …
+#    ahead: ↑
+#   behind: ↓
+# diverged: ↕
 zstyle ':vcs_info:*' stagedstr "%F{$color_staged}%2{✚ %}%f"
 zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{● %}%f"
 
