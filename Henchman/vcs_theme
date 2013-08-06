@@ -82,75 +82,75 @@ PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs
 
 
 # % escapes:
-# %s (vcs in use)
-# %b (branch name)
 # %a (action)
-# %i (identifier or revision)
-# %c (changes staged)
-# %u (unstaged changes)
-# %R (repository base directory)
-# %r (repository name)
-# %S (subdirectory within repository)
-# %m (misc replacement [git/hg patch])
 # %b (branch: branch name)
-# %r (branch: current revision)
-# %r (hgrev: local revision)
-# %h (hgrev: 40 byte hash)
-# %p (patch: top patch applied [applied-string])
-# %u (patch: number of unapplied patches [unapplied-string])
-# %n (patch: number of applied patches)
+# %b (branch name)
+# %c (changes staged)
 # %c (patch: number of unapplied patches)
 # %g (patch: names of active mq guards)
 # %G (patch: number of active mq guards)
+# %h (hgrev: 40 byte hash)
+# %i (identifier or revision)
+# %m (misc replacement [git/hg patch])
+# %n (patch: number of applied patches)
+# %p (patch: top patch applied [applied-string])
+# %r (branch: current revision)
+# %r (hgrev: local revision)
+# %R (repository base directory)
+# %r (repository name)
+# %S (subdirectory within repository)
+# %s (vcs in use)
+# %u (patch: number of unapplied patches [unapplied-string])
+# %u (unstaged changes)
 #
-# %% %
 # %) )
-# %l line/tty
-# %M FQDN
-# %m hostname up to first .
-# %n $USERNAME
-# %y tty w/o /dev
 # %# %(!.#.%%)
-# %? status code
-# %_ status of parser (if/for) $PS2
-# %d $PWD
-# %/ $PWD
-# %~ $PWD, with ~ contraction
-# %h history number
-# %! history number
-# %i current line number $PS4
-# %I current line number of current file $PS4
-# %j number of jobs
-# %L $SHLVL
-# %N name of current script / $0
-# %x name of file with current source code executed
-# %c trailing commponent of $PWD with ~ contraction
-# %. trailing commponent of $PWD
-# %C trailing commponent of $PWD
-# %D date (yy-mm-dd)
-# %T time (24hr)
-# %t time (am/pm)
-# %@ time (am/pm)
-# %* time (24 hours, with seconds)
-# %w date in day-dd
-# %W date mm/dd/yy
-# %D %D{string} strftime
+# %% %
 # %B start bold
 # %b stop bold
+# %C trailing commponent of $PWD
+# %c trailing commponent of $PWD with ~ contraction
+# %D date (yy-mm-dd)
+# %D %D{string} strftime
+# %d $PWD
 # %E clear to end of line
-# %U start underline
-# %u stop underline
-# %S start standout
-# %s stop standout
 # %F start foreground color
 # %f stop foreground color
+# %G glitch - specify width in %{...%}
+# %h history number
+# %! history number
+# %I current line number of current file $PS4
+# %i current line number $PS4
+# %( %(...) if/then/else
+# %j number of jobs
 # %K start background color
 # %k stop background color
-# %{ start literal escape
-# %} stop literal escape
-# %G glitch - specify width in %{...%}
-# %v $psvar
-# %( %(...) if/then/else
 # %< %<...< left truncation
+# %l line/tty
+# %L $SHLVL
+# %M FQDN
+# %m hostname up to first .
+# %N name of current script / $0
+# %n $USERNAME
+# %/ $PWD
+# %~ $PWD, with ~ contraction
 # %> %>...> right truncation
+# %S start standout
+# %s stop standout
+# %{ start literal escape
+# %? status code
+# %_ status of parser (if/for) $PS2
+# %} stop literal escape
+# %* time (24 hours, with seconds)
+# %@ time (am/pm)
+# %. trailing commponent of $PWD
+# %T time (24hr)
+# %t time (am/pm)
+# %U start underline
+# %u stop underline
+# %v $psvar
+# %w date in day-dd
+# %W date mm/dd/yy
 # %[ %[x...] left(x=<) or right (x=>) truncation
+# %x name of file with current source code executed
+# %y tty w/o /dev
