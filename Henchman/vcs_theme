@@ -34,13 +34,13 @@ sm[fossil]='%2{⌘ %}' # Fossil       <http://fossil-scm.org/>
 smc[git]='%1{±%}'    # Git          <http://git-scm.com/>
 smc[hg]='%1{☿%}'     # Mercurial    <http://mercurial.selenic.com/>
 sm[svn]='%1{‡%}'     # Subversion   <http://subversion.tigris.org/>
-# sm_cdv             # Codeville    <http://codeville.org/>
-# sm_cvs             # Concurrent Versioning System <http://www.nongnu.org/cvs/>
-# sm_darcs           # Darcs        <http://darcs.net/>
-# sm_mtn             # Monotone     <http://monotone.ca/>
-# sm_p4              # Perforce     <http://www.perforce.com/>
-# sm_svk             # SVK          <http://svk.bestpractical.com/>
-# sm_tla             # GNU arch     <http://www.gnu.org/software/gnu-arch/>
+# sm[cdv]=''         # Codeville    <http://codeville.org/>
+# sm[cvs]=''         # Concurrent Versioning System <http://www.nongnu.org/cvs/>
+# sm[darcs]=''       # Darcs        <http://darcs.net/>
+# sm[mtn]=''         # Monotone     <http://monotone.ca/>
+# sm[p4]=''          # Perforce     <http://www.perforce.com/>
+# sm[svk]=''         # SVK          <http://svk.bestpractical.com/>
+# sm[tla]=''         # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 
 for vcs in ${(k)sm}; do
 	zstyle ":vcs_info:$vcs:*" formats $format $sm[$vcs] $no_changes
