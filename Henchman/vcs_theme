@@ -17,30 +17,31 @@ change_format="(%B%F{$color_branch}%b%f%%b|"
 actionformat="(%B%F{$color_branch}%b%f%%b|%F{$color_action}%a%f"
 change_actionformat="(%B%F{$color_branch}%b%f%%b:%F{$color_action}%a%f|"
 not_smart='[%s]-'
-not_smart_mark='%#'
+not_smart_mark='%1{ᴤ%}'
+no_vcs_mark='%#'
 changes='%u%c'
 no_changes='%{%}'
 # default repo format:
 zstyle ':vcs_info:*' max-exports 3
 zstyle ':vcs_info:*' formats $not_smart$format $not_smart_mark $no_changes
 zstyle ':vcs_info:*' actionformats $not_smart$actionformat $not_smart_mark $no_changes
-zstyle ':vcs_info:*' nvcsformats '' $not_smart_mark
+zstyle ':vcs_info:*' nvcsformats '' $no_vcs_mark
 
 # smart marks:
 # We specify width, since some terminals get upset otherwise
 typeset -A sm smc
 sm[bzr]='%2{⚯ %}'    # Bazaar       <http://bazaar-vcs.org/>
+sm[cvs]='%1{☤%}'     # Concurrent Versioning System <http://www.nongnu.org/cvs/>
+sm[darcs]='%2{✼ %}'  # Darcs        <http://darcs.net/>
 sm[fossil]='%2{⌘ %}' # Fossil       <http://fossil-scm.org/>
 smc[git]='%1{±%}'    # Git          <http://git-scm.com/>
 smc[hg]='%1{☿%}'     # Mercurial    <http://mercurial.selenic.com/>
+sm[mtn]='%2{🐭 %}'    # Monotone     <http://monotone.ca/>
+sm[p4]='%1{ꟼ%}'      # Perforce     <http://www.perforce.com/>
 sm[svn]='%1{‡%}'     # Subversion   <http://subversion.tigris.org/>
+sm[tla]='%2{⌒ %}'    # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 # sm[cdv]=''         # Codeville    <http://codeville.org/>
-# sm[cvs]=''         # Concurrent Versioning System <http://www.nongnu.org/cvs/>
-# sm[darcs]=''       # Darcs        <http://darcs.net/>
-# sm[mtn]=''         # Monotone     <http://monotone.ca/>
-# sm[p4]=''          # Perforce     <http://www.perforce.com/>
 # sm[svk]=''         # SVK          <http://svk.bestpractical.com/>
-# sm[tla]=''         # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 
 for vcs in ${(k)sm}; do
 	zstyle ":vcs_info:$vcs:*" formats $format $sm[$vcs] $no_changes
