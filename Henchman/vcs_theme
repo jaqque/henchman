@@ -22,8 +22,8 @@ changes='%u%c'
 no_changes='%{%}'
 # default repo format:
 zstyle ':vcs_info:*' max-exports 3
-zstyle ':vcs_info:*' formats $not_smart$format $not_smart_mark $changes
-zstyle ':vcs_info:*' actionformats $not_smart$actionformat $not_smart_mark $changes
+zstyle ':vcs_info:*' formats $not_smart$format $not_smart_mark $no_changes
+zstyle ':vcs_info:*' actionformats $not_smart$actionformat $not_smart_mark $no_changes
 zstyle ':vcs_info:*' nvcsformats '' $not_smart_mark
 
 # smart marks:
