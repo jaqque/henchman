@@ -154,3 +154,32 @@ PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs
 # %{ start literal escape
 # %} stop literal escape
 # %~ $PWD, with ~ contraction
+
+# Available:
+# %"
+# %&
+# %'
+# %+
+# %,
+# %:
+# %;
+# %=
+# %A
+# %e
+# %H
+# %J
+# %o
+# %O
+# %P
+# %q
+# %Q
+# %V
+# %X
+# %Y
+# %z
+# %Z
+# %\
+# %]
+# %^
+# %`
+# %|
