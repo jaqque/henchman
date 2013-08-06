@@ -79,6 +79,27 @@ zstyle ':vcs_info:*' stagedstr "%F{$color_staged}%2{✚ %}%f"
 zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{● %}%f"
 
 # How to integrate checking for pushes/pulls server side? what hook?
+#
+# :vcs_info:vcs-string+hook-name:user-context:repo-root-name
+# I would like to find a better hook, but I may not be able to.
+zstyle ':vcs_info:git+set-message:*' hooks remote
+function +vi-remote () {
+	if [[ $1 -ne 2 ]]; then
+		return
+	fi
+	local st="$(git status --porcelain 2>/dev/null)"
+	# I would like to use --porcelain -z, but the NULLs break the regex below
+	# the following regex *can* run into problems, if a file is named with an embedded/
+	# leading/trainling '?? ' string and that file is "of interest"
+	if [[ $st =~ '\?\? ' ]]; then
+		local message=$2
+		message=${message/\%u/$hook_com[unstaged]}
+		message=${message/\%c/$hook_com[staged]}
+		hook_com[message]="$message%{…%}"
+		#echo $hook_com[message]
+		ret=1
+	fi
+}
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
