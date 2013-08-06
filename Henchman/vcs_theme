@@ -4,11 +4,22 @@ print 'Setting up for vcs info themes'
 autoload -Uz vcs_info
 function precmd() { vcs_info }
 
+# colors!
+# You can use names or numbers. I like names.
+color_branch='magenta'
+color_staged='blue'
+color_unstaged='red'
+color_clean='green'
+color_action='cyan'
+
 format='[%b]'
+change_format="(%B%F{$color_branch}%b%f%%b|"
 actionformat='[%b|%a]'
+change_actionformat="(%B%F{$color_branch}%b%f%%b/%F{$color_action}%a%f|"
 not_smart='(%s)-'
 not_smart_mark='%#'
 changes='%u%c'
+no_changes='%{%}'
 # default repo format:
 zstyle ':vcs_info:*' max-exports 3
 zstyle ':vcs_info:*' formats $not_smart$format $not_smart_mark $changes
@@ -16,26 +27,27 @@ zstyle ':vcs_info:*' actionformats $not_smart$actionformat $not_smart_mark $chan
 zstyle ':vcs_info:*' nvcsformats '' $not_smart_mark
 
 # smart marks:
+# We specify width, since some terminals get upset otherwise
 sm_bzr='%2{⚯ %}'
 sm_fossil='%2{⌘ %}'
 sm_git='%1{±%}'
 sm_hg='%1{☿%}'
 sm_svn='%1{‡%}'
 
-zstyle ':vcs_info:bzr:*' formats $format $sm_bzr
-zstyle ':vcs_info:bzr:*' actionformats $actionformat $sm_bzr
+zstyle ':vcs_info:bzr:*' formats $format $sm_bzr $no_changes
+zstyle ':vcs_info:bzr:*' actionformats $actionformat $sm_bzr $no_changes
 
-zstyle ':vcs_info:fossil:*' formats $format $sm_fossil
-zstyle ':vcs_info:fossil:*' actionformats $actionformat $sm_fossil
+zstyle ':vcs_info:fossil:*' formats $format $sm_fossil $no_changes
+zstyle ':vcs_info:fossil:*' actionformats $actionformat $sm_fossil $no_changes
 
-zstyle ':vcs_info:git:*' formats $format $sm_git $changes
-zstyle ':vcs_info:git:*' actionformats $actionformat $sm_git $changes
+zstyle ':vcs_info:git:*' formats $change_format $sm_git $changes
+zstyle ':vcs_info:git:*' actionformats $change_actionformat $sm_git $changes
 
-zstyle ':vcs_info:hg:*' formats $format $sm_hg $changes
-zstyle ':vcs_info:hg:*' actionformats $actionformat $sm_hg $changes
+zstyle ':vcs_info:hg:*' formats $format $sm_hg $no_changes
+zstyle ':vcs_info:hg:*' actionformats $actionformat $sm_hg $no_changes
 
-zstyle ':vcs_info:svn:*' formats $format $sm_svn. $changes
-zstyle ':vcs_info:svn:*' actionformats $actionformat $sm_svn
+zstyle ':vcs_info:svn:*' formats $format $sm_svn $no_changes
+zstyle ':vcs_info:svn:*' actionformats $actionformat $sm_svn $no_changes
 
 # Make %u and %c useful:
 zstyle ':vcs_info:*' check-for-changes true
@@ -53,9 +65,11 @@ zstyle ':vcs_info:hg:*' branchformat '%b(%r)'
 # unstaged:     red ●
 # all good:   green ✔
 # new file: default …
-zstyle ':vcs_info:*' stagedstr '%F{blue}%2{✚ %}%f'
-zstyle ':vcs_info:*' unstagedstr '%F{red}%2{● %}%f'
+zstyle ':vcs_info:*' stagedstr "%F{$color_staged}%2{✚ %}%f"
+zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{● %}%f"
 
 # How to integrate checking for pushes/pulls server side? what hook?
 
-PS1='%F{5}[%F{2}%n%F{5}] %F{3}%3~ %F{4}${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_-%F{green\}%2{✔ %\}}}%f${vcs_info_msg_1_} '
+# To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
+# non-null.  %{%} works for this purpos. Looks ugly, but it's the option
+PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}${vcs_info_msg_1_} '
