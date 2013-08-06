@@ -28,26 +28,29 @@ zstyle ':vcs_info:*' nvcsformats '' $not_smart_mark
 
 # smart marks:
 # We specify width, since some terminals get upset otherwise
-sm_bzr='%2{⚯ %}'
-sm_fossil='%2{⌘ %}'
-sm_git='%1{±%}'
-sm_hg='%1{☿%}'
-sm_svn='%1{‡%}'
+typeset -A sm smc
+sm[bzr]='%2{⚯ %}'    # Bazaar       <http://bazaar-vcs.org/>
+sm[fossil]='%2{⌘ %}' # Fossil       <http://fossil-scm.org/>
+smc[git]='%1{±%}'    # Git          <http://git-scm.com/>
+smc[hg]='%1{☿%}'     # Mercurial    <http://mercurial.selenic.com/>
+sm[svn]='%1{‡%}'     # Subversion   <http://subversion.tigris.org/>
+# sm_cdv             # Codeville    <http://codeville.org/>
+# sm_cvs             # Concurrent Versioning System <http://www.nongnu.org/cvs/>
+# sm_darcs           # Darcs        <http://darcs.net/>
+# sm_mtn             # Monotone     <http://monotone.ca/>
+# sm_p4              # Perforce     <http://www.perforce.com/>
+# sm_svk             # SVK          <http://svk.bestpractical.com/>
+# sm_tla             # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 
-zstyle ':vcs_info:bzr:*' formats $format $sm_bzr $no_changes
-zstyle ':vcs_info:bzr:*' actionformats $actionformat $sm_bzr $no_changes
+for vcs in ${(k)sm}; do
+	zstyle ":vcs_info:$vcs:*" formats $format $sm[$vcs] $no_changes
+	zstyle ":vcs_info:$vcs:*" actionformats $actionformat $sm[$vcs] $no_changes
+done
 
-zstyle ':vcs_info:fossil:*' formats $format $sm_fossil $no_changes
-zstyle ':vcs_info:fossil:*' actionformats $actionformat $sm_fossil $no_changes
-
-zstyle ':vcs_info:git:*' formats $change_format $sm_git $changes
-zstyle ':vcs_info:git:*' actionformats $change_actionformat $sm_git $changes
-
-zstyle ':vcs_info:hg:*' formats $format $sm_hg $no_changes
-zstyle ':vcs_info:hg:*' actionformats $actionformat $sm_hg $no_changes
-
-zstyle ':vcs_info:svn:*' formats $format $sm_svn $no_changes
-zstyle ':vcs_info:svn:*' actionformats $actionformat $sm_svn $no_changes
+for vcs in ${(k)smc}; do
+	zstyle ":vcs_info:$vcs:*" formats $change_format $smc[$vcs] $changes
+	zstyle ":vcs_info:$vcs:*" actionformats $change_actionformat $smc[$vcs] $changes
+done
 
 # Make %u and %c useful:
 zstyle ':vcs_info:*' check-for-changes true
