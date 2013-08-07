@@ -95,7 +95,7 @@ function +vi-remote () {
 		local message=$2
 		message=${message/\%u/$hook_com[unstaged]}
 		message=${message/\%c/$hook_com[staged]}
-		hook_com[message]="$message%{…%}"
+		hook_com[message]="$message%1{…%}"
 		#echo $hook_com[message]
 		ret=1
 	fi
