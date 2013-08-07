@@ -161,6 +161,28 @@ hm_prompt
 # yellow on red
 # white on red
 
+typeset -A hm_heatmap hm_heatoff
+hm_heatmap[0]='%F{cyan}'
+hm_heatoff[0]='%f'
+hm_heatmap[1]='%B%F{cyan}'
+hm_heatoff[1]='%f%b'
+hm_heatmap[2]='%F{green}'
+hm_heatoff[2]='%f'
+hm_heatmap[3]='%B%F{green}'
+hm_heatoff[3]='%f%b'
+hm_heatmap[4]='%F{yellow}'
+hm_heatoff[4]='%f'
+hm_heatmap[5]='%B%F{yellow}'
+hm_heatoff[5]='%f%b'
+hm_heatmap[6]='%F{red}'
+hm_heatoff[6]='%f'
+hm_heatmap[7]='%B%F{red}'
+hm_heatoff[7]='%f%b'
+hm_heatmap[8]='%B%K{red}%F{yellow}'
+hm_heatoff[8]='%f%k%b'
+hm_heatmap[9]='%B%K{red}%F{white}'
+hm_heatoff[9]='%f%k%b'
+
 heatmap () {
 	message="This is a test message "
 	count=''
