@@ -1,0 +1,180 @@
+# Henchman / hire
+
+# Start up the Henchman prompt
+
+# aliases: init
+
+# (C) 2013 John H. Robinson, IV
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License Version 2 as published by the
+# Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51
+# Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+PROMPT='%B%(!..[%n@)%m:%~%(!..])$(git_super_status)%#%b '
+
+unfunction precmd # Liquid shell defines this to do it's work
+
+# Replace colon with read/write flag
+
+function hm_colon () {
+  if [[ -w $PWD ]]
+  then
+    print ':'
+  else
+    print '%F{red}:%f'
+  fi
+}
+PROMPT='%B%(!..[%n@)%m$(hm_colon)%~%(!..])$(git_super_status)%#%b '
+
+# Maximim path length..
+# Problem with characters like … is some terminals see it as double-wide
+# Using 1/3 of $COLUMNS lets the path expand even as the terminal changes
+# width
+function hm_path () {
+	print %B${$(print -P '%'$((COLUMNS/3))'<…<%~')/…/%1{…%}}%b
+}
+PROMPT='%B%(!..[%n@)%m$(hm_colon)$(hm_path)%(!..])$(git_super_status)%#%b '
+
+# previous exit code
+PROMPT='%B%(!..[%n@)%m$(hm_colon)$(hm_path)%(!..])$(git_super_status)%(0?.. %F{magenta}%?%f)%#%b '
+
+# tag
+function hm_tag() {
+	HM_TAG="${1:+$* }"
+}
+PROMPT='$HM_TAG%B%(!..[%n@)%m$(hm_colon)$(hm_path)%(!..])$(git_super_status)%(0?.. %F{magenta}%?%f)%#%b '
+
+# time
+# no one cares about the current time in a prompt :P
+function hm_time() {
+	print "${HM_TIME_FORMAT:+$HM_TIME_FORMAT }"
+}
+PROMPT='$HM_TAG$(hm_time)%B%(!..[%n@)%m$(hm_colon)$(hm_path)%(!..])$(git_super_status)%(0?.. %F{magenta}%?%f)%#%b '
+
+# http proxy
+function hm_proxy() {
+	case $HTTP_PROXY$http_proxy in
+		'') ;;
+		*) print '%F{cyan}%1{↥%}%f' ;;
+	esac
+}
+PROMPT='$HM_TAG$(hm_time)%B%(!..[%n@)%m$(hm_colon)$(hm_path)%(!..])$(hm_proxy)$(git_super_status)%(0?.. %F{magenta}%?%f)%#%b '
+
+hm_x11() {
+	case $DISPLAY in
+		'') print '%F{yellow}@%f' ;;
+		*) print '%(!..@)' ;;
+	esac
+}
+
+hm_screen_open() {
+	case $TERM in
+		*screen*) print '%B%F{blue}[%b%f' ;;
+		*) print '%(!..[)' ;;
+	esac
+}
+hm_screen_close() {
+	case $TERM in
+		*screen*) print '%B%F{blue}]%b%f' ;;
+		*) print '%(!..])' ;;
+	esac
+}
+
+# can typeset tell us if a function is defined?
+# if so - print $(func) otherwise print the alternative, if any
+
+hm_prompt() {
+	is_func() {
+		if [ "$(typeset -mf $1)" ]; then
+			print '$('$1')'
+		else
+			print "$2"
+		fi
+	}
+
+	# Need to be able to expand process substitution in the prompt
+	setopt promptsubst
+
+	PROMPT=''
+	PROMPT="$PROMPT$HM_TAG" # shell tag
+	PROMPT="$PROMPT$(is_func hm_time)" # current time
+#	PROMPT="$PROMPT%B" # start bold
+	PROMPT="$PROMPT$(is_func hm_screen_open '%(!..[)')" # screen/tmux [
+	PROMPT="$PROMPT%(!..%n)" # login, if non-root
+	PROMPT="$PROMPT$(is_func hm_x11 '%(!..@)')" # x11 at-sign
+	PROMPT="$PROMPT%m" # machine name
+	PROMPT="$PROMPT$(is_func hm_colon :)" # read/write colon
+	PROMPT="$PROMPT$(is_func hm_path '%B%~%b')" # compressed path
+	PROMPT="$PROMPT$(is_func hm_screen_close '%(!..])')" # screen/tmux ]
+	PROMPT="$PROMPT$(is_func git_super_status)" # git status
+	PROMPT="$PROMPT$(is_func hm_proxy)" # proxy flag
+	PROMPT="$PROMPT%(0?.. %F{magenta}%?%f)" # status code, if non-zero
+	PROMPT="$PROMPT%(!.%F{red}.)%#%(!.%f.)" # smart prompt (root/non-root)
+#	PROMPT="$PROMPT%b" # end bold
+	PROMPT="$PROMPT " # append space
+	#PROMPT="$PROMPT"
+	#PROMPT="$PROMPT"
+	#PROMPT="$PROMPT"
+
+	unfunction is_func
+}
+hm_prompt
+
+
+# heatmap
+# roygbiv
+# reverse: violet indigo blue green yellow orange red
+# ANSI colors: black,  red,  green,  yellow,  blue, magenta,  cyan  and  white
+
+# ANSI mapped to "heat"
+# magenta
+# blue
+# cyan
+# green
+# yellow
+# red
+
+# Reduced ANSI to "heat"
+# cyan
+# green
+# yellow
+# red
+
+# Reduced ANSI to "heat", expanded to 10 units
+# cyan
+# bright cyan
+# green
+# bright green
+# yellow
+# bright yellow
+# red
+# bright red
+# yellow on red
+# white on red
+
+heatmap () {
+	message="This is a test message "
+	count=''
+	print -P '%F{cyan}'$message$((count++))'%f'
+	print -P '%B%F{cyan}'$message$((count++))'%f%b'
+	print -P '%F{green}'$message$((count++))'%f'
+	print -P '%B%F{green}'$message$((count++))'%f%b'
+	print -P '%F{yellow}'$message$((count++))'%f'
+	print -P '%B%F{yellow}'$message$((count++))'%f%b'
+	print -P '%F{red}'$message$((count++))'%f'
+	print -P '%B%F{red}'$message$((count++))'%f%b'
+	print -P '%B%K{red}%F{yellow}'$message$((count++))'%f%k%b'
+	print -P '%B%K{red}%F{white}'$message$((count++))'%f%k%b'
+}
+
+print 'Thank you for using Henchman'
+print '`°nn~'
