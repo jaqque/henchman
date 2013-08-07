@@ -7,8 +7,8 @@ function precmd() { vcs_info }
 # colors!
 # You can use names or numbers. I like names.
 color_branch='magenta'
-color_staged='blue'
-color_unstaged='red'
+color_staged='red'
+color_unstaged='blue'
 color_clean='green'
 color_action='cyan'
 
@@ -69,20 +69,22 @@ zstyle ':vcs_info:hg:*' branchformat '%r:%b'
 
 # These need to have spaces, since they appear double-wide, except for new file
 # Only in some fonts are they that way
-#   staged:    blue ✚
-# unstaged:     red ●
+#   staged:     red ●
+# unstaged:    blue ✚
 # all good:   green ✔
 # new file: default …
-#    ahead: ↑
-#   behind: ↓
-# diverged: ↕
-zstyle ':vcs_info:*' stagedstr "%F{$color_staged}%2{✚ %}%f"
-zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{● %}%f"
+#    ahead: default ↑
+#   behind: default ↓
+# diverged: default ↕
+zstyle ':vcs_info:*' stagedstr "%F{$color_staged}%2{● %}%f"
+zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{✚ %}%f"
 
 # How to integrate checking for pushes/pulls server side? what hook?
 #
 # :vcs_info:vcs-string+hook-name:user-context:repo-root-name
 # I would like to find a better hook, but I may not be able to.
+#
+# TODO: zsh_git_status recognises a new file as staged, but vcs_info doesn't (zsh v5.0.0)
 zstyle ':vcs_info:git+set-message:*' hooks remote
 function +vi-remote () {
 	# %+ for untracked files
@@ -103,7 +105,26 @@ function +vi-remote () {
 			message=${message/\%c/$hook_com[staged]}
 			message=${message/\%+/$untracked}
 			hook_com[message]="$message"
-			#echo $hook_com[message]
+			ret=1
+			;;
+		3)
+			# TODO: Combine both git calls into one
+			typeset -a st_arr
+			local st
+			st="$(git status --porcelain --branch 2>/dev/null)"
+			st_arr=(${(f)st})
+			## master
+			## master...origin/master [ahead 1]
+			## master...origin/master [behind 1]
+			## master...origin/master [ahead 1, behind 1]
+			local ahead behind
+			if [[ $st_arr[1] =~ ahead ]]; then
+				ahead="%1{↑%}${${st_arr[1]##* \[ahead }%%(,*|\])}"
+			fi
+			if [[ $st_arr[1] =~ behind ]]; then
+				behind="%1{↓%}${${st_arr[1]##*( \[|, )behind }%]}"
+			fi
+			hook_com[message]="$behind$ahead"
 			ret=1
 			;;
 	esac
@@ -111,7 +132,7 @@ function +vi-remote () {
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
-PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_1_}%b '
+PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_:-$vcs_info_msg_3_%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_1_}%b '
 
 
 # % escapes:
