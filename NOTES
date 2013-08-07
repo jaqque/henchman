@@ -4,6 +4,33 @@ PROMPT='%B[%n@%m:%~%b$(git_super_status)%B]%#%b '
 Root prompt basis:
 PROMPT='%B%m:%~%b$(git_super_status)%B%#%b '
 
+
+PROMPT=$(henchman)
+
+hm_prompt to build prompt, based upon hm_prompt (or hm_ps1?)
+
+Flags:
+* #T tag
+* #t time
+* #b battery
+* #p battery percentage
+* #l load
+* #S scree/tmux sessions
+* #z sleeping jobs
+* #& background jobs
+* #[ screen/tmux enabled open [ flag
+* #] screen/tmux enables close ] flag
+* #@ X11 @
+* #h (ssh/telnet) host
+* #: read/write $PWD
+* #~ $path (shortened)
+* #P http proxy flag
+* #v vcs status
+* #? status
+* #% prompt / smartmark
+* ## #
+
+
 Order:
 1. Session tag (HM_TAG)
 1. Time (HM_TIME)
