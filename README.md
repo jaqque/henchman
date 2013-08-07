@@ -29,6 +29,7 @@ Features:
 
 Not everything is implemented yet, so bear with us.
 
+Henchman was inspired by Liquid Prompt.
 
 (C) 2013 John H. Robinson, IV
 
