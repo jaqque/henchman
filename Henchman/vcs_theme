@@ -21,8 +21,9 @@ not_smart_mark='%1{ᴤ%}'
 no_vcs_mark='%#'
 changes='%u%c%+'
 no_changes='%{%}'
+divergence='%^'
 # default repo format:
-zstyle ':vcs_info:*' max-exports 3
+zstyle ':vcs_info:*' max-exports 4
 zstyle ':vcs_info:*' formats $not_smart$format $not_smart_mark $no_changes
 zstyle ':vcs_info:*' actionformats $not_smart$actionformat $not_smart_mark $no_changes
 zstyle ':vcs_info:*' nvcsformats '' $no_vcs_mark
@@ -49,8 +50,8 @@ for vcs in ${(k)sm}; do
 done
 
 for vcs in ${(k)smc}; do
-	zstyle ":vcs_info:$vcs:*" formats $change_format $smc[$vcs] $changes
-	zstyle ":vcs_info:$vcs:*" actionformats $change_actionformat $smc[$vcs] $changes
+	zstyle ":vcs_info:$vcs:*" formats $change_format $smc[$vcs] $changes $divergence
+	zstyle ":vcs_info:$vcs:*" actionformats $change_actionformat $smc[$vcs] $changes $divergence
 done
 
 # Make %u and %c useful:
@@ -86,23 +87,26 @@ zstyle ':vcs_info:git+set-message:*' hooks remote
 function +vi-remote () {
 	# %+ for untracked files
 	# %^ for origin divergence
-	if [[ $1 -ne 2 ]]; then
-		return
-	fi
-	local st="$(git status --porcelain 2>/dev/null)"
-	# I would like to use --porcelain -z, but the NULLs break the regex below
-	# the following regex *can* run into problems, if a file is named with an embedded/
-	# leading/trainling '?? ' string and that file is "of interest"
-	if [[ $st =~ '\?\? ' ]]; then
-		local message=$2
-		local untracked='%1{…%}'
-		message=${message/\%u/$hook_com[unstaged]}
-		message=${message/\%c/$hook_com[staged]}
-		message=${message/\%+/$untracked}
-		hook_com[message]="$message"
-		#echo $hook_com[message]
-		ret=1
-	fi
+
+	case $1 in
+		2)
+			local st="$(git status --porcelain 2>/dev/null)"
+			# I would like to use --porcelain -z, but the NULLs break the regex below
+			# the following regex *can* run into problems, if a file is named with an embedded/
+			# leading/trainling '?? ' string and that file is "of interest"
+			local untracked='%1{…%}'
+			if [[ ! $st =~ '\?\? ' ]]; then
+				unset untracked
+			fi
+			local message=$2
+			message=${message/\%u/$hook_com[unstaged]}
+			message=${message/\%c/$hook_com[staged]}
+			message=${message/\%+/$untracked}
+			hook_com[message]="$message"
+			#echo $hook_com[message]
+			ret=1
+			;;
+	esac
 }
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
