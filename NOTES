@@ -42,3 +42,8 @@ Root order:
 1. VCS status
 1. Colored $? if non-zero
 1. Prompt (%/#/HG/git/whatever)
+
+
+<!--
+`code 🕤 ⌁24% ⌂42% 3d/2&/1z [user@server:~/ … /code/liquidprompt][pyenv]↥ master(+10/-5,3)*+ 125 ±`
+-->
