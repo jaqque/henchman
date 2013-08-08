@@ -86,8 +86,8 @@ zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{✚ %}%f"
 # I would like to find a better hook, but I may not be able to.
 #
 # TODO: zsh_git_status recognises a new file as staged, but vcs_info doesn't (zsh v5.0.0)
-zstyle ':vcs_info:git+set-message:*' hooks remote
-function +vi-remote () {
+zstyle ':vcs_info:git+set-message:*' hooks git-remote
+function +vi-git-remote () {
 	# %+ for untracked files
 	# %^ for origin divergence
 
