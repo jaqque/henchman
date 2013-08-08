@@ -136,7 +136,7 @@ function +vi-remote () {
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
-PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_2_:-$vcs_info_msg_3_%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_1_}%b '
+PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_3_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_1_}%b '
 
 
 # % escapes:
