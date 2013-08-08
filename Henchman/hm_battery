@@ -1,0 +1,33 @@
+#include <gplv2>
+
+function hm_battery() {
+
+	local charge percent color
+	hm_battery_darwin | read charge percent
+
+	if   [[ $percent -ge 90 ]]; then
+		color=default
+	elif [[ $percent -ge 70 ]]; then
+	    color=green
+	elif [[ $percent -ge 30 ]]; then
+		color=yellow
+	else
+		color=red
+	fi
+
+	case $charge in
+		charging)    charge='%F{green}%2{⏚ %}%f' ;;
+		charged)     charge='' ;;
+		discharging) charge="%F{$color}%1{⌁%}"     ;;
+	esac
+
+	typeset -i scale
+	scale=$(((100-percentage)/10))
+	color=$hm_heatmap[$scale]
+	roloc=$hm_heatoff[$scale]
+
+	echo "$charge""$color$percentage%%$roloc"
+
+	
+
+}
