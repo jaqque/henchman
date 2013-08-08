@@ -1,6 +1,7 @@
 #!/bin/echo Please use source 
 
 print 'Setting up for vcs info themes'
+setopt promptsubst
 autoload -Uz vcs_info
 function precmd() { vcs_info }
 
@@ -118,11 +119,14 @@ function +vi-remote () {
 			## master...origin/master [behind 1]
 			## master...origin/master [ahead 1, behind 1]
 			local ahead behind
-			if [[ $st_arr[1] =~ ahead ]]; then
-				ahead="%1{↑%}${${st_arr[1]##* \[ahead }%%(,*|\])}"
+			if [[ ! $st_arr[1] = ${st_arr[1]##*ahead} ]]; then
+				local ahead_sigil='%1{↑%}'
+				ahead="$ahead_sigil${${st_arr[1]##* \[ahead }%%(,*|\])}"
 			fi
-			if [[ $st_arr[1] =~ behind ]]; then
-				behind="%1{↓%}${${st_arr[1]##*( \[|, )behind }%]}"
+
+			if [[ ! $st_arr[1] = ${st_arr[1]##*behind} ]]; then
+				local behind_sigil='%1{↓%}'
+				behind="$behind_sigil${${st_arr[1]##*( \[|, )behind }%]}"
 			fi
 			hook_com[message]="$behind$ahead"
 			ret=1
