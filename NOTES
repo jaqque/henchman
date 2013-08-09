@@ -19,6 +19,7 @@ Items of interest:
 * staged commits (count)
 * incoming commits (count/flag)
 * outgoing commits (count/flag)
+* smart mark (sigil)
 
 Flags:
 * #T tag
