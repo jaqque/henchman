@@ -215,8 +215,6 @@ function vcs_counts () {
 					commit*added*) unstaged=${${line%% added*}##* } ;|
 					commit*modified*) unstaged=${${line%% modified*}##* } ;|
 					commit*unknown*) untracked=${${line%% unknown*}##* } ;;
-					update*) ;;
-					remote*) ;|
 					remote*outgoing*) outgoing=${${line%% outgoing*}##* } ;|
 					remote*incoming*) incoming=${${line%% or more incoming*}##* } ;;
 				esac
