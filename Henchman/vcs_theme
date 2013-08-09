@@ -170,10 +170,10 @@ function +vi-hg-remote () {
 			local message=''
 			if [[ -n ${st_arr[6]} ]]; then
 				message=${st_arr[6]##remote: }
-				if [[ ! ${st_arr[6]} = ${st_arr[6]#*incoming} ]]; then
+				if [[ ! ${st_arr[6]} = ${st_arr[6]#*outgoing} ]]; then
 					ahead=$ahead_sigil
 				fi
-				if [[ ! ${st_arr[6]} = ${st_arr[6]#*outgoing} ]]; then
+				if [[ ! ${st_arr[6]} = ${st_arr[6]#*incoming} ]]; then
 					behind=$behind_sigil
 				fi
 			fi
