@@ -184,6 +184,62 @@ function +vi-hg-remote () {
 	esac
 }
 
+function vcs_counts () {
+	# use $hook_com[] as a vehicle, but prepend keys with hm_ to prevent collisions
+	typeset -a st
+	local line
+	typeset -i staged unstaged untracked incoming outgoing
+
+	case $hook_com[vcs] in
+		git)
+			st=(${(f)"$(git status --porcelain --branch 2>/dev/null)"})
+			for line in $st; do
+				[[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
+				# ;| causes following tests to be tried, as well
+				case $line in
+					A*)  : $((staged++)) ;|
+					M*|?M*) : $((unstaged++)) ;;
+					'?? '*) : $((untracked++)) ;;
+					'## '*\[ahead*) outgoing=${${line##* \[ahead }%%(,*|\])} ;|
+					'## '*\[*behind*) incoming=${${line##*( \[|, )behind }%]} ;;
+				esac
+			done
+
+		;;
+		hg)
+			st=(${(f)"$(hg summary --remote 2>/dev/null)"})
+			for line in $st; do
+				[[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
+				line=${line//:}
+				case $line in
+					commit*added*) unstaged=${${line%% added*}##* } ;|
+					commit*modified*) unstaged=${${line%% modified*}##* } ;|
+					commit*unknown*) untracked=${${line%% unknown*}##* } ;;
+					update*) ;;
+					remote*) ;|
+					remote*outgoing*) outgoing=${${line%% outgoing*}##* } ;|
+					remote*incoming*) incoming=${${line%% or more incoming*}##* } ;;
+				esac
+			done
+			;;
+	esac
+
+	hook_com[hm_staged]=$staged
+	hook_com[hm_unstaged]=$unstaged
+	hook_com[hm_untracked]=$untracked
+	hook_com[hm_incoming]=$incoming
+	hook_com[hm_outgoing]=$outgoing
+
+}
+function vcs_counts_lastmsg () {
+	printf 'staged=%i\nunstaged=%i\nuntracked=%i\noutgoing=%i\nincoming=%i\n' \
+		$hook_com[hm_staged] \
+		$hook_com[hm_unstaged] \
+		$hook_com[hm_untracked] \
+		$hook_com[hm_outgoing] \
+		$hook_com[hm_incoming]
+}
+
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
 PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_3_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_1_}%b '
