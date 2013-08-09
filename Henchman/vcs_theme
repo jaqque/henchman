@@ -237,6 +237,40 @@ function vcs_counts_lastmsg () {
 		$hook_com[hm_outgoing] \
 		$hook_com[hm_incoming]
 }
+function vcs_prompt() {
+	local staged="%F{red}%2{● %}"
+	local unstaged="%F{blue}%2{✚ %}"
+	local untracked='%1{…%}'
+	local outgoing='%1{↑%}'
+	local incoming='%1{↓%}'
+	local clean='%F{green}%1{✔%}%f'
+	local mess
+
+	vcs_counts
+	if [[ $hook_com[hm_incoming] -gt 0 ]]; then
+		mess="$mess$incoming$hook_com[hm_incoming]"
+	fi
+	if [[ $hook_com[hm_outgoing] -gt 0 ]]; then
+		mess="$mess$outgoing$hook_com[hm_outgoing]"
+	fi
+
+	mess="$mess|"
+
+	if [[ $hook_com[hm_staged] -gt 0 ]]; then
+		mess="$mess$staged$hook_com[hm_staged]%f"
+	fi
+	if [[ $hook_com[hm_unstaged] -gt 0 ]]; then
+		mess="$mess$unstaged$hook_com[hm_unstaged]%f"
+	fi
+	if [[ $hook_com[hm_untracked] -gt 0 ]]; then
+		mess="$mess$untracked"
+	fi
+	if [[ $(( $hook_com[hm_staged] + $hook_com[hm_unstaged] + $hook_com[hm_untracked] )) -eq 0 ]]; then
+		mess="$mess$clean"
+	fi
+
+	print -P "$mess"
+}
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
