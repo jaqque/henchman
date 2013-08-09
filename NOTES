@@ -9,6 +9,17 @@ PROMPT=$(henchman)
 
 hm_prompt to build prompt, based upon hm_prompt (or hm_ps1?)
 
+Use vcs_info to build individual parts in $vcs_info_msg_X_
+use them later in $PROMPT
+
+Items of interest:
+* branch name (string)
+* untracked files (flag)
+* unstaged commits (count)
+* staged commits (count)
+* incoming commits (count/flag)
+* outgoing commits (count/flag)
+
 Flags:
 * #T tag
 * #t time
