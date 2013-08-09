@@ -55,7 +55,7 @@ for vcs in ${(k)smc}; do
 	zstyle ":vcs_info:$vcs:*" actionformats $change_actionformat $smc[$vcs] $changes $divergence
 done
 
-# Make %u and %c useful:
+# Make %u and %c useful: (potentially expensive)
 zstyle ':vcs_info:*' check-for-changes true
 
 # For %u and %c to work for mercurial, extra steps are required:
@@ -138,6 +138,9 @@ zstyle ':vcs_info:hg+set-message:*' hooks hg-remote
 function +vi-hg-remote () {
 	# %+ for untracked files
 	# %^ for origin divergence
+
+	# If we aren't checking for changes, skip everything
+	zstyle -t ':vcs_info:hg:' check-for-changes || return 0
 
 	case $1 in
 		2)
