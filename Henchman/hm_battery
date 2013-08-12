@@ -2,32 +2,39 @@
 
 function hm_battery() {
 
-	local charge percent color
+	local charge percent
 	hm_battery_darwin | read charge percent
 
+	local sigil_color
 	if   [[ $percent -ge 90 ]]; then
-		color=default
+		sigil_color=default
 	elif [[ $percent -ge 70 ]]; then
-	    color=green
+	    sigil_color=green
 	elif [[ $percent -ge 30 ]]; then
-		color=yellow
+		sigil_color=yellow
 	else
-		color=red
+		sigil_color=red
 	fi
 
+	local charge_sigil
 	case $charge in
-		charging)    charge='%F{green}%2{⏚ %}%f' ;;
-		charged)     charge='' ;;
-		discharging) charge="%F{$color}%1{⌁%}"     ;;
+		charging)    charge_sigil='%F{green}%1{⏚%}%f' ;;
+		charged)     charge_sigil='' ;;
+		discharging) charge_sigil="%F{$sigil_color}%1{⌁%}"     ;;
 	esac
 
 	typeset -i scale
-	scale=$(((100-percentage)/10))
+	scale=$(((100-percent)/10))
 	color=$hm_heatmap[$scale]
 	roloc=$hm_heatoff[$scale]
 
-	echo "$charge""$color$percentage%%$roloc"
+	echo "$charge_sigil $color$percent%%$roloc"
 
-	
 
 }
+
+case $OSTYPE in
+	darwin*) source ./hm_battery_darwin ;;
+esac
+
+source ./hm_heatmap
