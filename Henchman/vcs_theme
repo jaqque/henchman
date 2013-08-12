@@ -25,9 +25,9 @@ no_changes='%{%}'
 divergence='%^'
 # default repo format:
 zstyle ':vcs_info:*' max-exports 4
-zstyle ':vcs_info:*' formats $not_smart$format $not_smart_mark $no_changes
-zstyle ':vcs_info:*' actionformats $not_smart$actionformat $not_smart_mark $no_changes
-zstyle ':vcs_info:*' nvcsformats '' $no_vcs_mark
+zstyle ':vcs_info:*' formats $not_smart_mark $not_smart$format $no_changes
+zstyle ':vcs_info:*' actionformats $not_smart_mark $not_smart$actionformat $no_changes
+zstyle ':vcs_info:*' nvcsformats $no_vcs_mark
 
 # smart marks:
 # We specify width, since some terminals get upset otherwise
@@ -46,13 +46,13 @@ sm[tla]='%2{⌒ %}'    # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 # sm[svk]=''         # SVK          <http://svk.bestpractical.com/>
 
 for vcs in ${(k)sm}; do
-	zstyle ":vcs_info:$vcs:*" formats $format $sm[$vcs] $no_changes
-	zstyle ":vcs_info:$vcs:*" actionformats $actionformat $sm[$vcs] $no_changes
+	zstyle ":vcs_info:$vcs:*" formats $sm[$vcs] $format $no_changes
+	zstyle ":vcs_info:$vcs:*" actionformats $sm[$vcs] $actionformat $no_changes
 done
 
 for vcs in ${(k)smc}; do
-	zstyle ":vcs_info:$vcs:*" formats $change_format $smc[$vcs] $changes $divergence
-	zstyle ":vcs_info:$vcs:*" actionformats $change_actionformat $smc[$vcs] $changes $divergence
+	zstyle ":vcs_info:$vcs:*" formats $smc[$vcs] $change_format $changes $divergence
+	zstyle ":vcs_info:$vcs:*" actionformats $smc[$vcs] $change_actionformat $changes $divergence
 done
 
 # Make %u and %c useful: (potentially expensive)
@@ -274,7 +274,7 @@ function vcs_prompt() {
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
-PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_0_:+${vcs_info_msg_0_}${vcs_info_msg_3_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_1_}%b '
+PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_:+${vcs_info_msg_1_}${vcs_info_msg_3_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_0_}%b '
 
 
 # % escapes:
