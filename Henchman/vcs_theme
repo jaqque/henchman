@@ -198,7 +198,11 @@ function vcs_counts () {
 				# ;| causes following tests to be tried, as well
 				case $line in
 					A*)  : $((staged++)) ;|
-					M*|?M*) : $((unstaged++)) ;;
+					D*)  : $((staged++)) ;|
+					M*)  : $((staged++)) ;|
+					R*)  : $((staged=staged+2)) ;|
+					?M*) : $((unstaged++)) ;|
+					?D*) : $((unstaged++)) ;;
 					'?? '*) : $((untracked++)) ;;
 					'## '*\[ahead*) outgoing=${${line##* \[ahead }%%(,*|\])} ;|
 					'## '*\[*behind*) incoming=${${line##*( \[|, )behind }%]} ;;
