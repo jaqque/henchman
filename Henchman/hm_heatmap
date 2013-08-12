@@ -1,0 +1,33 @@
+typeset -A hm_heatmap hm_heatoff
+hm_heatmap[0]=''
+hm_heatoff[0]=''
+hm_heatmap[1]='%F{cyan}'
+hm_heatoff[1]='%f'
+hm_heatmap[2]='%B%F{cyan}'
+hm_heatoff[2]='%f%b'
+hm_heatmap[3]='%F{green}'
+hm_heatoff[3]='%f'
+hm_heatmap[4]='%B%F{green}'
+hm_heatoff[4]='%f%b'
+hm_heatmap[5]='%F{yellow}'
+hm_heatoff[5]='%f'
+hm_heatmap[6]='%B%F{yellow}'
+hm_heatoff[6]='%f%b'
+hm_heatmap[7]='%F{red}'
+hm_heatoff[7]='%f'
+hm_heatmap[8]='%B%F{red}'
+hm_heatoff[8]='%f%b'
+hm_heatmap[9]='%B%K{red}%F{yellow}'
+hm_heatoff[9]='%f%k%b'
+
+# LP heatmap:
+# 0 - default
+# 1 - green
+# 2 - bold green
+# 3 - yellow
+# 4 - bold yellow
+# 5 - red
+# 6 - bright red
+# 7 - black on red
+# 8 - bold white on red
+# 9 - bold yellow on red
