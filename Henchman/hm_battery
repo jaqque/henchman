@@ -1,8 +1,17 @@
 #include <gplv2>
 
+# set the glyphs
+zstyle ':henchman:*:glyph:' charging '%{1{⏚%}'
+zstyle ':henchman:*:glyph:' discharging '%1{⌁%}'
+
 function hm_battery() {
 
 	local charge percent
+	local charging_sigil
+	local discharging_sigil
+	zstyle -s ':henchman:battery:glyph:' charging charging_sigil
+	zstyle -s ':henchman:battery:glyph:' discharging discharging_sigil
+
 	hm_battery_darwin | read charge percent
 
 	local sigil_color
@@ -16,11 +25,10 @@ function hm_battery() {
 		sigil_color=red
 	fi
 
-	local charge_sigil
 	case $charge in
-		charging)    charge_sigil='%F{green}%1{⏚%}%f' ;;
-		charged)     charge_sigil='' ;;
-		discharging) charge_sigil="%F{$sigil_color}%1{⌁%}"     ;;
+		charging)    output="%F{$sigil_color}$charging_sigil%f" ;;
+		charged)     output='' ;;
+		discharging) output="%F{$sigil_color}$discharging_sigil"     ;;
 	esac
 
 	typeset -i scale
@@ -28,7 +36,7 @@ function hm_battery() {
 	color=$hm_heatmap[$scale]
 	roloc=$hm_heatoff[$scale]
 
-	echo "$charge_sigil $color$percent%%$roloc"
+	echo "$output$color$percent%%$roloc"
 
 
 }
