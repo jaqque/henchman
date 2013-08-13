@@ -1,7 +1,7 @@
 #include <gplv2>
 
 # set the glyphs
-zstyle ':henchman:*:glyph:' charging '%{1{⏚%}'
+zstyle ':henchman:*:glyph:' charging '%1{⏚%}'
 zstyle ':henchman:*:glyph:' discharging '%1{⌁%}'
 
 function hm_battery() {
