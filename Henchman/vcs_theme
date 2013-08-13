@@ -276,6 +276,68 @@ function vcs_prompt() {
 
 	print -P "$mess"
 }
+vcs_zstyle () {
+	local mess
+	# basically liberated from VCS_Info
+	# the zshcontrib(1) man page didn't mention Q -> quilt
+	zformat -f mess "$1" \
+		a:${hook_com[action]}    \
+		b:${hook_com[branch]}    \
+		c:${hook_com[staged]}    \
+		i:${hook_com[revision]}  \
+		m:${hook_com[misc]}      \
+		r:${hook_com[base-name]} \
+		s:${hook_com[vcs]}       \
+		u:${hook_com[unstaged]}  \
+		Q:${hook_com[quilt]}     \
+		R:${hook_com[base]}      \
+		S:${hook_com[subdir]}
+
+	echo "$mess"
+}
+vcs_redef () {
+	# redefine %c and %u:
+	#  %c: repository state status (staged, changed, clean)
+	#  %u: remote (ahead/behind)
+	vcs_counts
+
+	local staged="%F{red}%2{● %}"
+	local unstaged="%F{blue}%2{✚ %}"
+	local untracked='%1{…%}'
+	local outgoing='%1{↑%}'
+	local incoming='%1{↓%}'
+	local clean='%F{green}%1{✔%}%f'
+	local mess
+
+	# (%u)pstream:
+	mess=''
+	if [[ $hook_com[hm_incoming] -gt 0 ]]; then
+		mess="$mess$incoming$hook_com[hm_incoming]"
+	fi
+	if [[ $hook_com[hm_outgoing] -gt 0 ]]; then
+		mess="$mess$outgoing$hook_com[hm_outgoing]"
+	fi
+
+	$hook_com[unstaged]=$mess
+
+	# (%c)hanges
+	mess=''
+	if [[ $hook_com[hm_staged] -gt 0 ]]; then
+		mess="$mess$staged$hook_com[hm_staged]%f"
+	fi
+	if [[ $hook_com[hm_unstaged] -gt 0 ]]; then
+		mess="$mess$unstaged$hook_com[hm_unstaged]%f"
+	fi
+	if [[ $hook_com[hm_untracked] -gt 0 ]]; then
+		mess="$mess$untracked"
+	fi
+	if [[ $(( $hook_com[hm_staged] + $hook_com[hm_unstaged] + $hook_com[hm_untracked] )) -eq 0 ]]; then
+		mess="$mess$clean"
+	fi
+
+	$hook_com[staged]=$mess
+}
+
 
 # To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
 # non-null.  %{%} works for this purpos. Looks ugly, but it's the option
@@ -384,3 +446,15 @@ PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_:+${vcs_info_msg_1_}${vcs
 # %^
 # %` Bad idea
 # %|
+#
+# vcs_info (action)formats % escapes:
+# %s hook_com[vcs]
+# %b hook_com[branch]
+# %a hook_com[action]
+# %i hook_com[revision]
+# %c hook_com[staged]
+# %u hook_com[unstaged]
+# %R hook_com[base]
+# %r hook_com[base-name]
+# %S hook_com[subdir]
+# %m hook_com[misc]
