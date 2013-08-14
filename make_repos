@@ -113,3 +113,78 @@ done
 	git pull
 	echo unknown > new_file
 )
+
+# Mercurial
+
+master="$TARGET/hgmaster"
+#added="$TARGET/hgadded"
+ahead="$TARGET/hgahead"
+behind="$TARGET/hgbehind"
+clean="$TARGET/hgclean"
+clone="$TARGET/hgclone"
+#deleted="$TARGET/hgdeleted"
+dirty="$TARGET/hgdirty"
+diverged="$TARGET/hgdiverged"
+everything="$TARGET/hgeverything"
+#renamed="$TARGET/hgrenamed"
+#stage="$TARGET/hgstage"
+unknown="$TARGET/hgunknown"
+work="$TARGET/hgwork"
+
+echo "Creating mercurial repos:"
+hg init "$master"
+echo zeroth > "$master/file"
+hg -R "$master" add "$master/file"
+hg -R "$master" commit -m 'zeroth'
+
+hg init "$work" # work is independent
+
+for i in "$ahead" "$behind" "$clean" "$clone" "$diverged" "$dirty" "$everything" "$unknown"; do
+	hg clone "$master" "$i"
+done
+
+repo="$behind"
+echo first >> "$repo/file"
+hg add -R "$repo" "$repo/file"
+hg commit -R "$repo" -m 'first'
+hg push -R "$repo"
+hg update -R "$master"
+
+repo="$diverged"
+hg -R "$repo" pull
+hg -R "$repo" update
+echo diverged >> "$repo/file"
+hg commit -R "$repo" -m 'diverged'
+
+repo="$everything"
+hg -R "$repo" pull
+hg -R "$repo" update
+echo deverything >> "$repo/file"
+hg commit -R "$repo" -m 'everything'
+
+repo="$ahead"
+hg -R "$repo" pull
+hg -R "$repo" update
+echo second >> "$repo/file"
+hg commit -R "$repo" -m 'second'
+hg push -R "$repo"
+echo ahead >> "$repo/file"
+hg commit -R "$repo" -m 'ahead'
+
+repo="$everything"
+echo everything > "$repo/everything"
+echo everything >> "$repo/file"
+
+repo="$clean"
+hg pull -R "$repo"
+hg update -R "$repo"
+
+repo="$dirty"
+hg pull -R "$repo"
+hg update -R "$repo"
+echo dirty >> "$repo/file"
+
+repo="$unknown"
+hg pull -R "$repo"
+hg update -R "$repo"
+echo unknown >> "$repo/unknown"
