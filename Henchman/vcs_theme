@@ -217,9 +217,9 @@ function vcs_counts () {
 				[[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
 				line=${line//:}
 				case $line in
-					commit*added*) unstaged=${${line%% added*}##* } ;|
+					commit*added*)    unstaged=${${line%% added*}##* }    ;|
 					commit*modified*) unstaged=${${line%% modified*}##* } ;|
-					commit*unknown*) untracked=${${line%% unknown*}##* } ;;
+					commit*unknown*)  untracked=${${line%% unknown*}##* } ;;
 					remote*outgoing*) outgoing=${${line%% outgoing*}##* } ;|
 					remote*incoming*) incoming=${${line%% or more incoming*}##* } ;;
 				esac
