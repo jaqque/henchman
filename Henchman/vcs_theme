@@ -198,7 +198,7 @@ function vcs_counts () {
 				# ;| causes following tests to be tried, as well
 				case $line in
 					A*)  : $((staged++)) ;|
-					C*)  : $((staged++)) ;| # I honestly don't know what this means
+					C*)  : $((staged++)) ;| # I don't know what "copied in index" means
 					D*)  : $((staged++)) ;|
 					M*)  : $((staged++)) ;|
 					R*)  : $((staged=staged+2)) ;| # R=A+D
