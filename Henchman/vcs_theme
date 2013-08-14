@@ -13,20 +13,17 @@ color_unstaged='blue'
 color_clean='green'
 color_action='cyan'
 
-format="(%B%F{$color_branch}%b%f%%b"
-change_format="(%B%F{$color_branch}%b%f%%b"
-actionformat="(%B%F{$color_branch}%b%f%%b|%F{$color_action}%a%f"
-change_actionformat="(%B%F{$color_branch}%b%f%%b:%F{$color_action}%a%f|"
+format="(%B%F{$color_branch}%b%f%%b)"
+change_format="(%B%F{$color_branch}%b%f%%b%u|%c)"
+actionformat="(%B%F{$color_branch}%b%f%%b|%F{$color_action}%a%f)"
+change_actionformat="(%B%F{$color_branch}%b%f%%b:%F{$color_action}%a%f%u|%c)"
 not_smart='[%s]-'
 not_smart_mark='%1{ᴤ%}'
 no_vcs_mark='%#'
-changes='%u|%c'
-no_changes='%{%}'
-divergence='%^'
 # default repo format:
-zstyle ':vcs_info:*' max-exports 4
-zstyle ':vcs_info:*' formats $not_smart_mark $not_smart$format $no_changes
-zstyle ':vcs_info:*' actionformats $not_smart_mark $not_smart$actionformat $no_changes
+zstyle ':vcs_info:*' max-exports 2
+zstyle ':vcs_info:*' formats $not_smart_mark $not_smart$format
+zstyle ':vcs_info:*' actionformats $not_smart_mark $not_smart$actionformat
 zstyle ':vcs_info:*' nvcsformats $no_vcs_mark
 
 # smart marks:
@@ -46,13 +43,13 @@ sm[tla]='%2{⌒ %}'    # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 # sm[svk]=''         # SVK          <http://svk.bestpractical.com/>
 
 for vcs in ${(k)sm}; do
-	zstyle ":vcs_info:$vcs:*" formats $sm[$vcs] $format $no_changes
-	zstyle ":vcs_info:$vcs:*" actionformats $sm[$vcs] $actionformat $no_changes
+	zstyle ":vcs_info:$vcs:*" formats $sm[$vcs] $format
+	zstyle ":vcs_info:$vcs:*" actionformats $sm[$vcs] $actionformat
 done
 
 for vcs in ${(k)smc}; do
-	zstyle ":vcs_info:$vcs:*" formats $smc[$vcs] $change_format $changes $divergence
-	zstyle ":vcs_info:$vcs:*" actionformats $smc[$vcs] $change_actionformat $changes $divergence
+	zstyle ":vcs_info:$vcs:*" formats $smc[$vcs] $change_format
+	zstyle ":vcs_info:$vcs:*" actionformats $smc[$vcs] $change_actionformat
 done
 
 # Make %u and %c useful: (potentially expensive)
@@ -88,102 +85,6 @@ zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{✚ %}%f"
 # TODO: zsh_git_status recognises a new file as staged, but vcs_info doesn't (zsh v5.0.0)
 zstyle ':vcs_info:git+set-message:*' hooks repo-status
 zstyle ':vcs_info:hg+set-message:*'  hooks repo-status
-function +vi-git-remote () {
-	# %+ for untracked files
-	# %^ for origin divergence
-
-	case $1 in
-		2)
-			local st="$(git status --porcelain 2>/dev/null)"
-			# I would like to use --porcelain -z, but the NULLs break the regex below
-			# the following regex *can* run into problems, if a file is named with an embedded/
-			# leading/trainling '?? ' string and that file is "of interest"
-			local untracked='%1{…%}'
-			if [[ ! $st =~ '\?\? ' ]]; then
-				unset untracked
-			fi
-			local message=$2
-			message=${message/\%u/$hook_com[unstaged]}
-			message=${message/\%c/$hook_com[staged]}
-			message=${message/\%+/$untracked}
-			hook_com[message]="$message"
-			ret=1
-			;;
-		3)
-			# TODO: Combine both git calls into one
-			typeset -a st_arr
-			local st
-			st="$(git status --porcelain --branch 2>/dev/null)"
-			st_arr=(${(f)st})
-			## master
-			## master...origin/master [ahead 1]
-			## master...origin/master [behind 1]
-			## master...origin/master [ahead 1, behind 1]
-			local ahead behind
-			if [[ ! $st_arr[1] = ${st_arr[1]##*ahead} ]]; then
-				local ahead_sigil='%1{↑%}'
-				ahead="$ahead_sigil${${st_arr[1]##* \[ahead }%%(,*|\])}"
-			fi
-
-			if [[ ! $st_arr[1] = ${st_arr[1]##*behind} ]]; then
-				local behind_sigil='%1{↓%}'
-				behind="$behind_sigil${${st_arr[1]##*( \[|, )behind }%]}"
-			fi
-			hook_com[message]="$behind$ahead"
-			ret=1
-			;;
-	esac
-}
-
-#zstyle ':vcs_info:hg+set-message:*' hooks hg-remote
-function +vi-hg-remote () {
-	# %+ for untracked files
-	# %^ for origin divergence
-
-	# If we aren't checking for changes, skip everything
-	zstyle -t ':vcs_info:hg:' check-for-changes || return 0
-
-	case $1 in
-		2)
-			typeset -a st_arr
-			local st="$(hg summary 2>/dev/null)"
-			st_arr=(${(f)st})
-			local untracked='%1{…%}'
-			if [[ ${st_arr[4]} = ${st_arr[4]#*unknown} ]]; then
-				untracked=''
-			fi
-			local message=$2
-			message=${message/\%u/$hook_com[unstaged]}
-			message=${message/\%c/$hook_com[staged]}
-			message=${message/\%+/$untracked}
-			hook_com[message]="$message"
-			ret=1
-			;;
-		3)
-			# we can get accurate counts for outgoing commits,
-			# but "1 or more" estimates for incoming commits
-			typeset -a st_arr
-			local st="$(hg summary --remote 2>/dev/null)"
-			st_arr=(${(f)st})
-			local ahead ahead_sigil='%1{↑%}'
-			local behind behind_sigil='%1{↓%}'
-
-			local message=''
-			if [[ -n ${st_arr[6]} ]]; then
-				message=${st_arr[6]##remote: }
-				if [[ ! ${st_arr[6]} = ${st_arr[6]#*outgoing} ]]; then
-					ahead=$ahead_sigil
-				fi
-				if [[ ! ${st_arr[6]} = ${st_arr[6]#*incoming} ]]; then
-					behind=$behind_sigil
-				fi
-			fi
-
-			hook_com[message]=$behind$ahead
-			ret=1
-			;;
-	esac
-}
 
 function vcs_counts () {
 	# use $hook_com[] as a vehicle, but prepend keys with hm_ to prevent collisions
@@ -235,67 +136,7 @@ function vcs_counts () {
 	hook_com[hm_outgoing]=$outgoing
 
 }
-function vcs_counts_lastmsg () {
-	printf 'staged=%i\nunstaged=%i\nuntracked=%i\noutgoing=%i\nincoming=%i\n' \
-		$hook_com[hm_staged] \
-		$hook_com[hm_unstaged] \
-		$hook_com[hm_untracked] \
-		$hook_com[hm_outgoing] \
-		$hook_com[hm_incoming]
-}
-function vcs_prompt() {
-	local staged="%F{red}%2{● %}"
-	local unstaged="%F{blue}%2{✚ %}"
-	local untracked='%1{…%}'
-	local outgoing='%1{↑%}'
-	local incoming='%1{↓%}'
-	local clean='%F{green}%1{✔%}%f'
-	local mess
 
-	vcs_counts
-	if [[ $hook_com[hm_incoming] -gt 0 ]]; then
-		mess="$mess$incoming$hook_com[hm_incoming]"
-	fi
-	if [[ $hook_com[hm_outgoing] -gt 0 ]]; then
-		mess="$mess$outgoing$hook_com[hm_outgoing]"
-	fi
-
-	mess="$mess|"
-
-	if [[ $hook_com[hm_staged] -gt 0 ]]; then
-		mess="$mess$staged$hook_com[hm_staged]%f"
-	fi
-	if [[ $hook_com[hm_unstaged] -gt 0 ]]; then
-		mess="$mess$unstaged$hook_com[hm_unstaged]%f"
-	fi
-	if [[ $hook_com[hm_untracked] -gt 0 ]]; then
-		mess="$mess$untracked"
-	fi
-	if [[ $(( $hook_com[hm_staged] + $hook_com[hm_unstaged] + $hook_com[hm_untracked] )) -eq 0 ]]; then
-		mess="$mess$clean"
-	fi
-
-	print -P "$mess"
-}
-vcs_zstyle () {
-	local mess
-	# basically liberated from VCS_Info
-	# the zshcontrib(1) man page didn't mention Q -> quilt
-	zformat -f mess "$1" \
-		a:${hook_com[action]}    \
-		b:${hook_com[branch]}    \
-		c:${hook_com[staged]}    \
-		i:${hook_com[revision]}  \
-		m:${hook_com[misc]}      \
-		r:${hook_com[base-name]} \
-		s:${hook_com[vcs]}       \
-		u:${hook_com[unstaged]}  \
-		Q:${hook_com[quilt]}     \
-		R:${hook_com[base]}      \
-		S:${hook_com[subdir]}
-
-	echo "$mess"
-}
 +vi-repo-status () {
 	# redefine %c and %u:
 	#  %c: repository state status (staged, changed, clean)
@@ -339,11 +180,7 @@ vcs_zstyle () {
 	hook_com[staged]=$mess
 }
 
-
-# To allow the green checkmarks to work, we need to define vcs_info_2_ to be a nonprinting
-# non-null.  %{%} works for this purpos. Looks ugly, but it's the option
-PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_:+${vcs_info_msg_1_}${vcs_info_msg_3_}${vcs_info_msg_2_:-%F{green\}%1{✔%\}%f})}%B${vcs_info_msg_0_}%b '
-
+PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_}%B${vcs_info_msg_0_}%b '
 
 # % escapes:
 
