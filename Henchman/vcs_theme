@@ -61,9 +61,9 @@ zstyle ':vcs_info:hg:*' use-simple false # default, but why trust that?
 
 # Make use of mercurial's local revision number
 zstyle ':vcs_info:hg:*' hgrevformat '%r:%8.8h' # this is %i in formats
-zstyle ':vcs_info:hg:*' hgrevformat '%r' # this is %i in formats
+zstyle ':vcs_info:hg:*' hgrevformat '%r:' # this is %i in formats
 zstyle ':vcs_info:hg:*' branchformat '%b(%r)'
-zstyle ':vcs_info:hg:*' branchformat '%r:%b'
+zstyle ':vcs_info:hg:*' branchformat '%r%b'
 
 # These need to have spaces, since they appear double-wide, except for new file
 # Only in some fonts are they that way
@@ -141,6 +141,10 @@ function vcs_counts () {
 	# redefine %c and %u:
 	#  %c: repository state status (staged, changed, clean)
 	#  %u: remote (ahead/behind)
+
+	# Do we even want to get the repository status?
+	zstyle -t  ':vcs_info:*' check-for-changes || return 0
+
 	vcs_counts
 
 	local staged="%F{red}%2{● %}"
