@@ -1,0 +1,112 @@
+#!/bin/sh
+
+TARGET=${1:-/var/tmp/playground}
+
+mkdir -p "$TARGET"
+
+[ -d "$TARGET" ] || { echo "No such directory: $TARGET"; exit 1; }
+[ -w "$TARGET" ] || { echo "Read-only directory: $TARGET"; exit 2; }
+
+cd "$TARGET"
+
+master="gitmaster.git"
+ahead="gitahead"
+behind="gitbehind"
+clean="gitclean"
+clone="gitclone"
+dirty="gitdirty"
+diverged="gitdiverged"
+everything="giteverything"
+stage="gitstage"
+unknown="gitunknown"
+work="gitwork"
+
+echo "Creating git repos:"
+git init --bare $master
+git init $work # independent
+for i in $ahead $behind $clean $clone $dirty $diverged $everything $stage $unknown; do
+	git clone $master $i
+	( cd $i
+	  git config user.name "Test User"
+	  git config user.email "test@example.com"
+	)
+done
+
+(
+	cd $behind
+	echo first > file
+	git add file
+	git commit file -m 'first'
+	git push
+)
+
+(
+	cd $diverged
+	git pull
+	echo diverge >> file
+	git add file
+	git commit file -m 'diverge'
+)
+
+(
+	cd $everything
+	git pull
+	echo everything >> file
+	git add file
+	git commit file -m 'everything'
+)
+
+(
+	cd $ahead
+	git pull
+	echo second >> file
+	git add file
+	git commit file -m 'second'
+	git push
+	echo ahead >> file
+	git add file
+	git commit file -m 'ahead'
+)
+
+(
+	cd $behind
+	git fetch
+)
+
+(
+	cd $diverged
+	git fetch
+)
+
+(
+	cd $everything
+	git fetch
+	echo everything > everything
+	echo everything  >> file
+	git add file
+	echo everything >> file
+)
+
+(
+	cd $clean
+	git pull
+)
+
+(
+	cd $dirty
+	git pull
+	echo dirty >> file
+)
+
+(
+	cd $stage
+	git pull
+	echo staged >> file
+	git add file
+)
+
+(
+	cd $unknown
+	git pull
+	echo unknown > new_file
+)
