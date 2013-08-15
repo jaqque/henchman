@@ -35,11 +35,11 @@ sm[darcs]='%2{✼ %}'  # Darcs        <http://darcs.net/>
 sm[fossil]='%2{⌘ %}' # Fossil       <http://fossil-scm.org/>
 smc[git]='%1{±%}'    # Git          <http://git-scm.com/>
 smc[hg]='%1{☿%}'     # Mercurial    <http://mercurial.selenic.com/>
-sm[mtn]='%2{🐭 %}'    # Monotone     <http://monotone.ca/>
 sm[p4]='%1{ꟼ%}'      # Perforce     <http://www.perforce.com/>
 sm[svn]='%1{‡%}'     # Subversion   <http://subversion.tigris.org/>
 sm[tla]='%2{⌒ %}'    # GNU arch     <http://www.gnu.org/software/gnu-arch/>
 # sm[cdv]=''         # Codeville    <http://codeville.org/>
+# sm[mtn]='%2{🐭 %}'  # Monotone     <http://monotone.ca/>
 # sm[svk]=''         # SVK          <http://svk.bestpractical.com/>
 
 for vcs in ${(k)sm}; do
