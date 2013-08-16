@@ -7,6 +7,12 @@ function precmd() { vcs_info }
 
 # colors!
 # You can use names or numbers. I like names.
+zstyle ':henchman:vcs:*:' branch   magenta
+zstyle ':henchman:vcs:*:' staged   red
+zstyle ':henchman:vcs:*:' unstaged blue
+zstyle ':henchman:vcs:*:' clean    green
+zstyle ':henchman:vcs:*:' action   cyan
+
 color_branch='magenta'
 color_staged='red'
 color_unstaged='blue'
