@@ -13,11 +13,11 @@ function hm_battery_darwin () {
 		*\ charged\;*)     charge='charged'     ;;
 		*\ discharging\;*) charge='discharging' ;;
 	esac
-	
+
 	tab=$(printf '\t')
 	percentage=${battery_lines[2]##*$tab}
 	percentage=${percentage%\%*}
-	
+
 	echo "$charge" "$percentage"
 
 }
