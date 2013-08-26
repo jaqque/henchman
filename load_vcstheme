@@ -1,0 +1,14 @@
+function {
+  local pwd=$PWD
+  local location=${1%/*}
+  
+  if [[ $location == ${location#/} ]]; then
+    location=$PWD/$location
+  fi
+
+  eval $(print "function load_vcstheme { 
+    source $location/Henchman/vcs_theme
+  }")
+
+} $0
+
