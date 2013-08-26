@@ -82,6 +82,7 @@ Root order:
 1. Colored $? if non-zero
 1. Prompt (%/#/HG/git/whatever)
 
+Use "henchman" user context in vcs_info zstyles.
 
 <!--
 `code 🕤 ⌁24% ⌂42% 3d/2&/1z [user@server:~/ … /code/liquidprompt][pyenv]↥ master(+10/-5,3)*+ 125 ±`
