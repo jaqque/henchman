@@ -191,37 +191,37 @@ echo unknown >> "$repo/unknown"
 
 
 # bazaar
-commands[bzr]=/bin/true
+echo commands[bzr]=/bin/true
 mkdir -p bzrtest/.bzr/branch
 touch bzrtest/.bzr/branch/format
 
 # codeville
-commands[cdv]=/bin/true
+echo commands[cdv]=/bin/true
 mkdir -p cdvtest/.cdv
 touch cdvtest/.cdv/format
 
 # Concurrent Versioning System
-commands[cvs]=/bin/true
+echo commands[cvs]=/bin/true
 mkdir -p cvstest/CVS
 touch cvstest/CVS/Repository
 
 # darcs
-commands[darcs]=/bin/true
+echo commands[darcs]=/bin/true
 mkdir -p darcstest/_darcs
 touch darcstest/_darcs/format
 
 # Fossil
-commands[fossil]=/bin/true
+echo commands[fossil]=/bin/true
 mkdir fossiltest
 touch fossiltest/_FOSSIL_
 
 # Monotone
-commands[mtn]=/bin/true
+echo commands[mtn]=/bin/true
 mkdir -p mtntest/_MTN
 touch mtntest/_MTN/revision
 
 # Perforce
-commands[p4]=/bin/true
+echo commands[p4]=/bin/true
 mkdir p4test
 touch p4test/_p4config
 P4CONFIG=_p4config
@@ -231,7 +231,7 @@ P4CONFIG=_p4config
 
 
 # Subversion
-commands[svn]=/bin/true
+echo commands[svn]=/bin/true
 mkdir -p svntest/.svn
 touch svntest/.svn/entries svntest/.svn/format
 
