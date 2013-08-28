@@ -1,0 +1,34 @@
+#zstyle ':henchman:vcs:*:' mark '%1{ᴤ%}'
+
+# Pattern:
+# :henchman:susbsys:context
+#  subsys:  vcs
+#  context: repo type (git, svn, etc)
+
+typeset -A a_marks
+a_marks=(
+  \*     '%1{ᴤ%}'
+  bzr    '%2{⚯ %}'
+  cvs    '%1{☤ %}' 
+  darcs  '%2{✼ %}' 
+  fossil '%2{⌘ %}' 
+  git    '%1{±%}'  
+  hg     '%1{☿%}'  
+  p4     '%1{ꟼ%}'  
+  svn    '%1{‡%}'  
+  tla    '%2{⌒ %}' 
+)
+
+for i in ${(k)a_marks}; do
+  zstyle ':henchman:vcs:mark' $i    $a_marks[$i]
+done
+ 
+typeset -a g_marks
+
+zstyle -g g_marks ':henchman:vcs:mark'
+for i in $g_marks; do
+	zstyle -s ':henchman:vcs:mark' $i mark
+	echo "$i -> '$mark'"
+	echo "zstyle \":vcs_info:${i}:henchman:*\" formats $mark \$format"
+done
+
