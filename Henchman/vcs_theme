@@ -3,73 +3,76 @@
 print 'Setting up for vcs info themes'
 setopt promptsubst
 autoload -Uz vcs_info
-function precmd() { vcs_info }
+function precmd() { vcs_info henchman }
 
 # colors!
 # You can use names or numbers. I like names.
-zstyle ':henchman:vcs:*:' branch   magenta
-zstyle ':henchman:vcs:*:' staged   red
-zstyle ':henchman:vcs:*:' unstaged blue
-zstyle ':henchman:vcs:*:' clean    green
-zstyle ':henchman:vcs:*:' action   cyan
+zstyle ':henchman:vcs:color:' branch   magenta
+zstyle ':henchman:vcs:color:' staged   red
+zstyle ':henchman:vcs:color:' unstaged blue
+zstyle ':henchman:vcs:color:' clean    green
+zstyle ':henchman:vcs:color:' action   cyan
 
-color_branch='magenta'
-color_staged='red'
-color_unstaged='blue'
-color_clean='green'
-color_action='cyan'
+local branch action
+zstyle -s ':henchman:vcs:color:' branch branch
+zstyle -s ':henchman:vcs:color:' action action
 
-format="(%B%F{$color_branch}%b%f%%b)"
-change_format="(%B%F{$color_branch}%b%f%%b%u|%c)"
-actionformat="(%B%F{$color_branch}%b%f%%b|%F{$color_action}%a%f)"
-change_actionformat="(%B%F{$color_branch}%b%f%%b:%F{$color_action}%a%f%u|%c)"
+zstyle ':henchman:vcs:format:' \* '(%b%f%u%c)'
+zstyle ':henchman:vcs:actionformat:' \* '(%b%f:%a%u%c)'
+zstyle ':henchman:vcs:*:' prefix '[%s]-'
+zstyle ':henchman:vcs:nvcsformats:' \* '%#'
+
+format="(%B%F{$branch}%b%f%%b%u%c)"
+change_format="(%B%F{$branch}%b%f%%b%u|%c)"
+actionformat="(%B%F{$branch}%b%f%%b|%F{$action}%a%f%u%c)"
+change_actionformat="(%B%F{$branch}%b%f%%b:%F{$action}%a%f%u|%c)"
 not_smart='[%s]-'
 not_smart_mark='%1{ᴤ%}'
 no_vcs_mark='%#'
 # default repo format:
-zstyle ':vcs_info:*' max-exports 2
-zstyle ':vcs_info:*' formats $not_smart_mark $not_smart$format
-zstyle ':vcs_info:*' actionformats $not_smart_mark $not_smart$actionformat
-zstyle ':vcs_info:*' nvcsformats $no_vcs_mark
+zstyle ':vcs_info:*:henchman:*' max-exports 2
+zstyle ':vcs_info:*:henchman:*' formats $not_smart_mark $not_smart$format
+zstyle ':vcs_info:*:henchman:*' actionformats $not_smart_mark $not_smart$actionformat
+zstyle ':vcs_info:*:henchman:*' nvcsformats $no_vcs_mark
 
 # smart marks:
 # We specify width, since some terminals get upset otherwise
-typeset -A sm smc
-sm[bzr]='%2{⚯ %}'    # Bazaar       <http://bazaar-vcs.org/>
-sm[cvs]='%1{☤%}'     # Concurrent Versioning System <http://www.nongnu.org/cvs/>
-sm[darcs]='%2{✼ %}'  # Darcs        <http://darcs.net/>
-sm[fossil]='%2{⌘ %}' # Fossil       <http://fossil-scm.org/>
-smc[git]='%1{±%}'    # Git          <http://git-scm.com/>
-smc[hg]='%1{☿%}'     # Mercurial    <http://mercurial.selenic.com/>
-sm[p4]='%1{ꟼ%}'      # Perforce     <http://www.perforce.com/>
-sm[svn]='%1{‡%}'     # Subversion   <http://subversion.tigris.org/>
-sm[tla]='%2{⌒ %}'    # GNU arch     <http://www.gnu.org/software/gnu-arch/>
-# sm[cdv]=''         # Codeville    <http://codeville.org/>
-# sm[mtn]='%2{🐭 %}'  # Monotone     <http://monotone.ca/>
-# sm[svk]=''         # SVK          <http://svk.bestpractical.com/>
+zstyle ':henchman:vcs:mark' \*     '[%s]%1{ᴤ%}'  # default/unknown
+zstyle ':henchman:vcs:mark' bzr    '%2{⚯ %}' # Bazaar      <http://bazaar-vcs.org/>
+zstyle ':henchman:vcs:mark' cvs    '%1{☤%%}' # Concurrent Versioning System
+                                             #             <http://www.nongnu.org/cvs/>
+zstyle ':henchman:vcs:mark' darcs  '%2{✼ %}' # Darcs       <http://darcs.net/>
+zstyle ':henchman:vcs:mark' fossil '%2{⌘ %}' # Fossil      <http://fossil-scm.org/>
+zstyle ':henchman:vcs:mark' git    '%1{±%}'  # Git         <http://git-scm.com/>
+zstyle ':henchman:vcs:mark' hg     '%1{☿%}'  # Mercurial   <http://mercurial.selenic.com/>
+zstyle ':henchman:vcs:mark' p4     '%1{ꟼ%}'  # Perforce    <http://www.perforce.com/>
+zstyle ':henchman:vcs:mark' svn    '%1{‡%}'  # Subversion  <http://subversion.tigris.org/>
+zstyle ':henchman:vcs:mark' tla    '%2{⌒ %}' # GNU arch    <http://www.gnu.org/software/gnu-arch/>
+# zstyle ':henchman:vcs:*' mark cdv ''           # Codeville   <http://codeville.org/>
+# zstyle ':henchman:vcs:*' mark mtn '%2{🐭 %}'    # Monotone    <http://monotone.ca/>
+# zstyle ':henchman:vcs:*' mark svk ''           # SVK         <http://svk.bestpractical.com/>
 
-for vcs in ${(k)sm}; do
-	zstyle ":vcs_info:$vcs:*" formats $sm[$vcs] $format
-	zstyle ":vcs_info:$vcs:*" actionformats $sm[$vcs] $actionformat
-done
+typeset -a sm
+zstyle -g sm ':henchman:vcs:mark'
 
-for vcs in ${(k)smc}; do
-	zstyle ":vcs_info:$vcs:*" formats $smc[$vcs] $change_format
-	zstyle ":vcs_info:$vcs:*" actionformats $smc[$vcs] $change_actionformat
+for vcs in $sm; do
+	zstyle -s ':henchman:vcs:mark' $vcs mark
+	zstyle ":vcs_info:${vcs}:henchman:*" formats $mark $format
+	zstyle ":vcs_info:${vcs}:henchman:*" actionformats $mark $actionformat
 done
 
 # Make %u and %c useful: (potentially expensive)
-zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*:henchman:*' check-for-changes true
 
 # For %u and %c to work for mercurial, extra steps are required:
-zstyle ':vcs_info:hg:*' get-revision true
-zstyle ':vcs_info:hg:*' use-simple false # default, but why trust that?
+zstyle ':vcs_info:hg:henchman:*' get-revision true
+zstyle ':vcs_info:hg:henchman:*' use-simple false # default, but why trust that?
 
 # Make use of mercurial's local revision number
-zstyle ':vcs_info:hg:*' hgrevformat '%r:%8.8h' # this is %i in formats
-zstyle ':vcs_info:hg:*' hgrevformat '%r:' # this is %i in formats
-zstyle ':vcs_info:hg:*' branchformat '%b(%r)'
-zstyle ':vcs_info:hg:*' branchformat '%r%b'
+zstyle ':vcs_info:hg:henchman:*' hgrevformat '%r:%8.8h' # this is %i in formats
+zstyle ':vcs_info:hg:henchman:*' hgrevformat '%r:' # this is %i in formats
+zstyle ':vcs_info:hg:henchman:*' branchformat '%b(%r)'
+zstyle ':vcs_info:hg:henchman:*' branchformat '%r%b'
 
 # These need to have spaces, since they appear double-wide, except for new file
 # Only in some fonts are they that way
@@ -80,8 +83,8 @@ zstyle ':vcs_info:hg:*' branchformat '%r%b'
 #    ahead: default ↑
 #   behind: default ↓
 # diverged: default ↕
-zstyle ':vcs_info:*' stagedstr "%F{$color_staged}%2{● %}%f"
-zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{✚ %}%f"
+zstyle ':vcs_info:*:henchman:*' stagedstr "%F{$staged}%2{● %}%f"
+zstyle ':vcs_info:*:henchman:*' unstagedstr "%F{$unstaged}%2{✚ %}%f"
 
 # How to integrate checking for pushes/pulls server side? what hook?
 #
@@ -89,8 +92,8 @@ zstyle ':vcs_info:*' unstagedstr "%F{$color_unstaged}%2{✚ %}%f"
 # I would like to find a better hook, but I may not be able to.
 #
 # TODO: zsh_git_status recognises a new file as staged, but vcs_info doesn't (zsh v5.0.0)
-zstyle ':vcs_info:git+set-message:*' hooks repo-status
-zstyle ':vcs_info:hg+set-message:*'  hooks repo-status
+zstyle ':vcs_info:git+set-message:henchman:*' hooks repo-status
+zstyle ':vcs_info:hg+set-message:henchman:*'  hooks repo-status
 
 function vcs_counts () {
 	# use $hook_com[] as a vehicle, but prepend keys with hm_ to prevent collisions
@@ -149,16 +152,20 @@ function vcs_counts () {
 	#  %u: remote (ahead/behind)
 
 	# Do we even want to get the repository status?
-	zstyle -t  ':vcs_info:*' check-for-changes || return 0
+	zstyle -t  ":vcs_info:${hook_com[vcs]}:henchman:${hook_com[base-name]}" check-for-changes || return 0
 
 	vcs_counts
 
-	local staged="%F{red}%2{● %}"
-	local unstaged="%F{blue}%2{✚ %}"
+	zstyle -s ':henchman:vcs:color:' staged staged_color
+	zstyle -s ':henchman:vcs:color:' unstaged unstaged_color
+	zstyle -s ':henchman:vcs:color:' clean clean_color
+
+	local staged="%F{$staged_color}%2{● %}"
+	local unstaged="%F{$unstaged_color}%2{✚ %}"
 	local untracked='%1{…%}'
 	local outgoing='%1{↑%}'
 	local incoming='%1{↓%}'
-	local clean='%F{green}%1{✔%}%f'
+	local clean="%B%F{$clean_color}%1{✔%}%f%b"
 	local mess
 
 	# (%u)pstream:
@@ -173,7 +180,7 @@ function vcs_counts () {
 	hook_com[unstaged]=$mess
 
 	# (%c)hanges
-	mess=''
+	mess='|'
 	if [[ $hook_com[hm_staged] -gt 0 ]]; then
 		mess="$mess$staged$hook_com[hm_staged]%f"
 	fi
