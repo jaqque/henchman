@@ -138,11 +138,11 @@ function vcs_counts () {
 			;;
 	esac
 
-	hook_com[hm_staged]=$staged
-	hook_com[hm_unstaged]=$unstaged
-	hook_com[hm_untracked]=$untracked
-	hook_com[hm_incoming]=$incoming
-	hook_com[hm_outgoing]=$outgoing
+	user_data[hm_staged]=$staged
+	user_data[hm_unstaged]=$unstaged
+	user_data[hm_untracked]=$untracked
+	user_data[hm_incoming]=$incoming
+	user_data[hm_outgoing]=$outgoing
 
 }
 
@@ -170,27 +170,27 @@ function vcs_counts () {
 
 	# (%u)pstream:
 	mess=''
-	if [[ $hook_com[hm_incoming] -gt 0 ]]; then
-		mess="$mess$incoming$hook_com[hm_incoming]"
+	if [[ $user_data[hm_incoming] -gt 0 ]]; then
+		mess="$mess$incoming$user_data[hm_incoming]"
 	fi
-	if [[ $hook_com[hm_outgoing] -gt 0 ]]; then
-		mess="$mess$outgoing$hook_com[hm_outgoing]"
+	if [[ $user_data[hm_outgoing] -gt 0 ]]; then
+		mess="$mess$outgoing$user_data[hm_outgoing]"
 	fi
 
 	hook_com[unstaged]=$mess
 
 	# (%c)hanges
 	mess='|'
-	if [[ $hook_com[hm_staged] -gt 0 ]]; then
-		mess="$mess$staged$hook_com[hm_staged]%f"
+	if [[ $user_data[hm_staged] -gt 0 ]]; then
+		mess="$mess$staged$user_data[hm_staged]%f"
 	fi
-	if [[ $hook_com[hm_unstaged] -gt 0 ]]; then
-		mess="$mess$unstaged$hook_com[hm_unstaged]%f"
+	if [[ $user_data[hm_unstaged] -gt 0 ]]; then
+		mess="$mess$unstaged$user_data[hm_unstaged]%f"
 	fi
-	if [[ $hook_com[hm_untracked] -gt 0 ]]; then
+	if [[ $user_data[hm_untracked] -gt 0 ]]; then
 		mess="$mess$untracked"
 	fi
-	if [[ $(( $hook_com[hm_staged] + $hook_com[hm_unstaged] + $hook_com[hm_untracked] )) -eq 0 ]]; then
+	if [[ $(( $user_data[hm_staged] + $user_data[hm_unstaged] + $user_data[hm_untracked] )) -eq 0 ]]; then
 		mess="$mess$clean"
 	fi
 
