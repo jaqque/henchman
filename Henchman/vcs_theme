@@ -56,9 +56,9 @@ typeset -a sm
 zstyle -g sm ':henchman:vcs:mark'
 
 for vcs in $sm; do
-	zstyle -s ':henchman:vcs:mark' $vcs mark
-	zstyle ":vcs_info:${vcs}:henchman:*" formats $mark $format
-	zstyle ":vcs_info:${vcs}:henchman:*" actionformats $mark $actionformat
+    zstyle -s ':henchman:vcs:mark' $vcs mark
+    zstyle ":vcs_info:${vcs}:henchman:*" formats $mark $format
+    zstyle ":vcs_info:${vcs}:henchman:*" actionformats $mark $actionformat
 done
 
 # Make %u and %c useful: (potentially expensive)
@@ -96,105 +96,105 @@ zstyle ':vcs_info:git+set-message:henchman:*' hooks repo-status
 zstyle ':vcs_info:hg+set-message:henchman:*'  hooks repo-status
 
 function vcs_counts () {
-	# use $hook_com[] as a vehicle, but prepend keys with hm_ to prevent collisions
-	typeset -a st
-	local line
-	typeset -i staged unstaged untracked incoming outgoing
+    # use $hook_com[] as a vehicle, but prepend keys with hm_ to prevent collisions
+    typeset -a st
+    local line
+    typeset -i staged unstaged untracked incoming outgoing
 
-	case $hook_com[vcs] in
-		git)
-			st=(${(f)"$(git status --porcelain --branch 2>/dev/null)"})
-			for line in $st; do
-				[[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
-				# ;| causes following tests to be tried, as well
-				case $line in
-					A*)  : $((staged++)) ;|
-					C*)  : $((staged++)) ;| # I don't know what "copied in index" means
-					D*)  : $((staged++)) ;|
-					M*)  : $((staged++)) ;|
-					R*)  : $((staged=staged+2)) ;| # R=A+D
-					?M*) : $((unstaged++)) ;|
-					?D*) : $((unstaged++)) ;;
-					'?? '*) : $((untracked++)) ;;
-					'## '*\[ahead*) outgoing=${${line##* \[ahead }%%(,*|\])} ;|
-					'## '*\[*behind*) incoming=${${line##*( \[|, )behind }%]} ;;
-				esac
-			done
+    case $hook_com[vcs] in
+        git)
+            st=(${(f)"$(git status --porcelain --branch 2>/dev/null)"})
+            for line in $st; do
+                [[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
+                # ;| causes following tests to be tried, as well
+                case $line in
+                    A*)  : $((staged++)) ;|
+                    C*)  : $((staged++)) ;| # I don't know what "copied in index" means
+                    D*)  : $((staged++)) ;|
+                    M*)  : $((staged++)) ;|
+                    R*)  : $((staged=staged+2)) ;| # R=A+D
+                    ?M*) : $((unstaged++)) ;|
+                    ?D*) : $((unstaged++)) ;;
+                    '?? '*) : $((untracked++)) ;;
+                    '## '*\[ahead*) outgoing=${${line##* \[ahead }%%(,*|\])} ;|
+                    '## '*\[*behind*) incoming=${${line##*( \[|, )behind }%]} ;;
+                esac
+            done
 
-		;;
-		hg)
-			st=(${(f)"$(hg summary --remote 2>/dev/null)"})
-			for line in $st; do
-				[[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
-				line=${line//:}
-				case $line in
-					commit*added*)    unstaged=${${line%% added*}##* }    ;|
-					commit*modified*) unstaged=${${line%% modified*}##* } ;|
-					commit*unknown*)  untracked=${${line%% unknown*}##* } ;;
-					remote*outgoing*) outgoing=${${line%% outgoing*}##* } ;|
-					remote*incoming*) incoming=${${line%% or more incoming*}##* } ;;
-				esac
-			done
-			;;
-	esac
+        ;;
+        hg)
+            st=(${(f)"$(hg summary --remote 2>/dev/null)"})
+            for line in $st; do
+                [[ -n "$hm_DEBUG" ]] && print "Working on '$line':"
+                line=${line//:}
+                case $line in
+                    commit*added*)    unstaged=${${line%% added*}##* }    ;|
+                    commit*modified*) unstaged=${${line%% modified*}##* } ;|
+                    commit*unknown*)  untracked=${${line%% unknown*}##* } ;;
+                    remote*outgoing*) outgoing=${${line%% outgoing*}##* } ;|
+                    remote*incoming*) incoming=${${line%% or more incoming*}##* } ;;
+                esac
+            done
+            ;;
+    esac
 
-	user_data[hm_staged]=$staged
-	user_data[hm_unstaged]=$unstaged
-	user_data[hm_untracked]=$untracked
-	user_data[hm_incoming]=$incoming
-	user_data[hm_outgoing]=$outgoing
+    user_data[hm_staged]=$staged
+    user_data[hm_unstaged]=$unstaged
+    user_data[hm_untracked]=$untracked
+    user_data[hm_incoming]=$incoming
+    user_data[hm_outgoing]=$outgoing
 
 }
 
 +vi-repo-status () {
-	# redefine %c and %u:
-	#  %c: repository state status (staged, changed, clean)
-	#  %u: remote (ahead/behind)
+    # redefine %c and %u:
+    #  %c: repository state status (staged, changed, clean)
+    #  %u: remote (ahead/behind)
 
-	# Do we even want to get the repository status?
-	zstyle -t  ":vcs_info:${hook_com[vcs]}:henchman:${hook_com[base-name]}" check-for-changes || return 0
+    # Do we even want to get the repository status?
+    zstyle -t  ":vcs_info:${hook_com[vcs]}:henchman:${hook_com[base-name]}" check-for-changes || return 0
 
-	vcs_counts
+    vcs_counts
 
-	zstyle -s ':henchman:vcs:color:' staged staged_color
-	zstyle -s ':henchman:vcs:color:' unstaged unstaged_color
-	zstyle -s ':henchman:vcs:color:' clean clean_color
+    zstyle -s ':henchman:vcs:color:' staged staged_color
+    zstyle -s ':henchman:vcs:color:' unstaged unstaged_color
+    zstyle -s ':henchman:vcs:color:' clean clean_color
 
-	local staged="%F{$staged_color}%2{● %}"
-	local unstaged="%F{$unstaged_color}%2{✚ %}"
-	local untracked='%1{…%}'
-	local outgoing='%1{↑%}'
-	local incoming='%1{↓%}'
-	local clean="%B%F{$clean_color}%1{✔%}%f%b"
-	local mess
+    local staged="%F{$staged_color}%2{● %}"
+    local unstaged="%F{$unstaged_color}%2{✚ %}"
+    local untracked='%1{…%}'
+    local outgoing='%1{↑%}'
+    local incoming='%1{↓%}'
+    local clean="%B%F{$clean_color}%1{✔%}%f%b"
+    local mess
 
-	# (%u)pstream:
-	mess=''
-	if [[ $user_data[hm_incoming] -gt 0 ]]; then
-		mess="$mess$incoming$user_data[hm_incoming]"
-	fi
-	if [[ $user_data[hm_outgoing] -gt 0 ]]; then
-		mess="$mess$outgoing$user_data[hm_outgoing]"
-	fi
+    # (%u)pstream:
+    mess=''
+    if [[ $user_data[hm_incoming] -gt 0 ]]; then
+        mess="$mess$incoming$user_data[hm_incoming]"
+    fi
+    if [[ $user_data[hm_outgoing] -gt 0 ]]; then
+        mess="$mess$outgoing$user_data[hm_outgoing]"
+    fi
 
-	hook_com[unstaged]=$mess
+    hook_com[unstaged]=$mess
 
-	# (%c)hanges
-	mess='|'
-	if [[ $user_data[hm_staged] -gt 0 ]]; then
-		mess="$mess$staged$user_data[hm_staged]%f"
-	fi
-	if [[ $user_data[hm_unstaged] -gt 0 ]]; then
-		mess="$mess$unstaged$user_data[hm_unstaged]%f"
-	fi
-	if [[ $user_data[hm_untracked] -gt 0 ]]; then
-		mess="$mess$untracked"
-	fi
-	if [[ $(( $user_data[hm_staged] + $user_data[hm_unstaged] + $user_data[hm_untracked] )) -eq 0 ]]; then
-		mess="$mess$clean"
-	fi
+    # (%c)hanges
+    mess='|'
+    if [[ $user_data[hm_staged] -gt 0 ]]; then
+        mess="$mess$staged$user_data[hm_staged]%f"
+    fi
+    if [[ $user_data[hm_unstaged] -gt 0 ]]; then
+        mess="$mess$unstaged$user_data[hm_unstaged]%f"
+    fi
+    if [[ $user_data[hm_untracked] -gt 0 ]]; then
+        mess="$mess$untracked"
+    fi
+    if [[ $(( $user_data[hm_staged] + $user_data[hm_unstaged] + $user_data[hm_untracked] )) -eq 0 ]]; then
+        mess="$mess$clean"
+    fi
 
-	hook_com[staged]=$mess
+    hook_com[staged]=$mess
 }
 
 PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_}%B${vcs_info_msg_0_}%b '
@@ -313,3 +313,5 @@ PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_}%B${vcs_info_msg_0_}%b '
 # %r hook_com[base-name]
 # %S hook_com[subdir]
 # %m hook_com[misc]
+
+# vim:ft=zsh:ts=4:sw=4:et
