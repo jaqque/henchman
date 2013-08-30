@@ -5,22 +5,9 @@ setopt promptsubst
 autoload -Uz vcs_info
 function precmd() { vcs_info henchman }
 
-# colors!
-# You can use names or numbers. I like names.
-zstyle ':henchman:vcs:color:' branch   magenta
-zstyle ':henchman:vcs:color:' staged   red
-zstyle ':henchman:vcs:color:' unstaged blue
-zstyle ':henchman:vcs:color:' clean    green
-zstyle ':henchman:vcs:color:' action   cyan
-
 local branch action
 zstyle -s ':henchman:vcs:color:' branch branch
 zstyle -s ':henchman:vcs:color:' action action
-
-zstyle ':henchman:vcs:format:' \* '(%b%f%u%c)'
-zstyle ':henchman:vcs:actionformat:' \* '(%b%f:%a%u%c)'
-zstyle ':henchman:vcs:*:' prefix '[%s]-'
-zstyle ':henchman:vcs:nvcsformats:' \* '%#'
 
 format="(%B%F{$branch}%b%f%%b%u%c)"
 change_format="(%B%F{$branch}%b%f%%b%u|%c)"
@@ -34,23 +21,6 @@ zstyle ':vcs_info:*:henchman:*' max-exports 2
 zstyle ':vcs_info:*:henchman:*' formats $not_smart_mark $not_smart$format
 zstyle ':vcs_info:*:henchman:*' actionformats $not_smart_mark $not_smart$actionformat
 zstyle ':vcs_info:*:henchman:*' nvcsformats $no_vcs_mark
-
-# smart marks:
-# We specify width, since some terminals get upset otherwise
-zstyle ':henchman:vcs:mark' \*     '[%s]%1{ᴤ%}'  # default/unknown
-zstyle ':henchman:vcs:mark' bzr    '%2{⚯ %}' # Bazaar      <http://bazaar-vcs.org/>
-zstyle ':henchman:vcs:mark' cvs    '%1{☤%%}' # Concurrent Versioning System
-                                             #             <http://www.nongnu.org/cvs/>
-zstyle ':henchman:vcs:mark' darcs  '%2{✼ %}' # Darcs       <http://darcs.net/>
-zstyle ':henchman:vcs:mark' fossil '%2{⌘ %}' # Fossil      <http://fossil-scm.org/>
-zstyle ':henchman:vcs:mark' git    '%1{±%}'  # Git         <http://git-scm.com/>
-zstyle ':henchman:vcs:mark' hg     '%1{☿%}'  # Mercurial   <http://mercurial.selenic.com/>
-zstyle ':henchman:vcs:mark' p4     '%1{ꟼ%}'  # Perforce    <http://www.perforce.com/>
-zstyle ':henchman:vcs:mark' svn    '%1{‡%}'  # Subversion  <http://subversion.tigris.org/>
-zstyle ':henchman:vcs:mark' tla    '%2{⌒ %}' # GNU arch    <http://www.gnu.org/software/gnu-arch/>
-# zstyle ':henchman:vcs:*' mark cdv ''           # Codeville   <http://codeville.org/>
-# zstyle ':henchman:vcs:*' mark mtn '%2{🐭 %}'    # Monotone    <http://monotone.ca/>
-# zstyle ':henchman:vcs:*' mark svk ''           # SVK         <http://svk.bestpractical.com/>
 
 typeset -a sm
 zstyle -g sm ':henchman:vcs:mark'
@@ -196,8 +166,6 @@ function vcs_counts () {
 
     hook_com[staged]=$mess
 }
-
-PS1='%F{5}[%F{2}%n%F{5}]%f %F{3}%3~%f ${vcs_info_msg_1_}%B${vcs_info_msg_0_}%b '
 
 # % escapes:
 
