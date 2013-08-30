@@ -1,4 +1,4 @@
-function {
+function load_vcstheme {
   local pwd=$PWD
   local location=${1%/*}
   
@@ -6,9 +6,13 @@ function {
     location=$PWD/$location
   fi
 
+  # self modifying code. this is bad.
+  # i'm doing it, anyway
   eval $(print "function load_vcstheme { 
     source $location/Henchman/vcs_theme
   }")
 
-} $0
+}
+
+load_vcstheme $0
 
